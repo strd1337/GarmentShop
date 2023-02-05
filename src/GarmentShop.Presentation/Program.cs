@@ -1,22 +1,23 @@
+using GarmentShop.Application;
 using GarmentShop.Infrastructure;
-using Microsoft.EntityFrameworkCore;
+using GarmentShop.Presentation.Common.Errors;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-// Add services to the container.
+builder.Services
+    .AddApplication()
+    .AddInfrastructure(builder.Configuration);
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+builder.Services.AddSingleton<ProblemDetailsFactory, GarmentShopProblemDetailsFactory>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<GarmentShopContext>(op =>
-    op.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

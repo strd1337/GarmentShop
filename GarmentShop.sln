@@ -15,13 +15,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GarmentShop.Infrastructure"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GarmentShop.Presentation", "src\GarmentShop.Presentation\GarmentShop.Presentation.csproj", "{51151CAC-F97F-41EF-BC2C-1A8E9FFBBF97}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GarmentShop.Presentation.Tests.XUnit", "tests\GarmentShop.Presentation.Tests.XUnit\GarmentShop.Presentation.Tests.XUnit.csproj", "{1D5C1578-B7A5-456C-BFF0-CFA8576E565F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GarmentShop.Presentation.Tests.XUnit", "tests\GarmentShop.Presentation.Tests.XUnit\GarmentShop.Presentation.Tests.XUnit.csproj", "{1D5C1578-B7A5-456C-BFF0-CFA8576E565F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GarmentShop.Infrastructure.Tests.XUnit", "tests\GarmentShop.Infrastructure.Tests.XUnit\GarmentShop.Infrastructure.Tests.XUnit.csproj", "{56E81FDD-79CE-44A6-9F59-9E2C4063B0E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GarmentShop.Infrastructure.Tests.XUnit", "tests\GarmentShop.Infrastructure.Tests.XUnit\GarmentShop.Infrastructure.Tests.XUnit.csproj", "{56E81FDD-79CE-44A6-9F59-9E2C4063B0E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GarmentShop.Application.Tests.XUnit", "tests\GarmentShop.Application.Tests.XUnit\GarmentShop.Application.Tests.XUnit.csproj", "{56E7F54F-6899-41F8-A0CA-742EFABA78B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GarmentShop.Application.Tests.XUnit", "tests\GarmentShop.Application.Tests.XUnit\GarmentShop.Application.Tests.XUnit.csproj", "{56E7F54F-6899-41F8-A0CA-742EFABA78B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GarmentShop.Domain.Tests.XUnit", "tests\GarmentShop.Domain.Tests.XUnit\GarmentShop.Domain.Tests.XUnit.csproj", "{366DC83F-ED33-4E50-A32D-D31E7B62BDC8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GarmentShop.Domain.Tests.XUnit", "tests\GarmentShop.Domain.Tests.XUnit\GarmentShop.Domain.Tests.XUnit.csproj", "{366DC83F-ED33-4E50-A32D-D31E7B62BDC8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GarmentShop.Contracts", "src\GarmentShop.Contracts\GarmentShop.Contracts.csproj", "{CED1DCB0-35C6-4B1B-8D07-929B258BDF9E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,6 +63,10 @@ Global
 		{366DC83F-ED33-4E50-A32D-D31E7B62BDC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{366DC83F-ED33-4E50-A32D-D31E7B62BDC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{366DC83F-ED33-4E50-A32D-D31E7B62BDC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CED1DCB0-35C6-4B1B-8D07-929B258BDF9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CED1DCB0-35C6-4B1B-8D07-929B258BDF9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CED1DCB0-35C6-4B1B-8D07-929B258BDF9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CED1DCB0-35C6-4B1B-8D07-929B258BDF9E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -74,6 +80,7 @@ Global
 		{56E81FDD-79CE-44A6-9F59-9E2C4063B0E6} = {9CD138DC-D61F-4282-9A02-67AF4BF59609}
 		{56E7F54F-6899-41F8-A0CA-742EFABA78B6} = {9CD138DC-D61F-4282-9A02-67AF4BF59609}
 		{366DC83F-ED33-4E50-A32D-D31E7B62BDC8} = {9CD138DC-D61F-4282-9A02-67AF4BF59609}
+		{CED1DCB0-35C6-4B1B-8D07-929B258BDF9E} = {E75CB6A5-BA6C-4E4D-ADBD-C7E185C25318}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4A6402CD-D79D-4DE7-BE2D-2529736E7632}

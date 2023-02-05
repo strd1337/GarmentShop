@@ -7,12 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GarmentShop.Domain\GarmentShop.Domain.csproj" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Common\" />
-    <Folder Include="Services\" />
+    <ProjectReference Include="..\GarmentShop.Domain\GarmentShop.Domain.csproj" />
   </ItemGroup>
 
 </Project>
