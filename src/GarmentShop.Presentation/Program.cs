@@ -1,20 +1,13 @@
 using GarmentShop.Application;
 using GarmentShop.Infrastructure;
-using GarmentShop.Presentation.Common.Errors;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
+using GarmentShop.Presentation;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
+    .AddPresentation()
     .AddApplication()
     .AddInfrastructure(builder.Configuration);
-
-builder.Services.AddControllers();
-
-builder.Services.AddSingleton<ProblemDetailsFactory, GarmentShopProblemDetailsFactory>();
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
