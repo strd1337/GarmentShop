@@ -1,6 +1,9 @@
-﻿using GarmentShop.Application.Services.Auth;
+﻿using GarmentShop.Application.Auth.Commands.Register;
+using GarmentShop.Application.Auth.Queries.Login;
 using GarmentShop.Contracts.Authentication;
 using GarmentShop.Domain.Common.Errors;
+using MapsterMapper;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GarmentShop.Presentation.Controllers.Auth
@@ -8,35 +11,36 @@ namespace GarmentShop.Presentation.Controllers.Auth
     [Route("auth")]
     public class AuthenticationController : ApiController
     {
-        private readonly IAuthenticationService authenticationService;
+        private readonly IMediator mediator;
+        private readonly IMapper mapper;
 
-        public AuthenticationController(IAuthenticationService authenticationService)
+        public AuthenticationController(IMediator mediator, IMapper mapper)
         {
-            this.authenticationService = authenticationService;
+            this.mediator = mediator;
+            this.mapper = mapper;
         }
-
+        
         [HttpPost("register")]
-        public IActionResult Register(RegisterRequest request)
+        public async Task<IActionResult> Register(RegisterRequest request)
         {
-            var authResult = authenticationService.Register(
-                request.FirstName,
-                request.LastName, 
-                request.Email, 
-                request.Password);
+            var command = mapper.Map<RegisterCommand>(request);
+
+            var authResult = await mediator.Send(command);
 
             return authResult.Match(
-                authResult => Ok(MapAuthResult(authResult)),
+                authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),
                 errors => Problem(errors));
         }
 
         [HttpPost("login")]
-        public IActionResult Login(LoginRequest request)
+        public async Task<IActionResult> Login(LoginRequest request)
         {
-            var authResult = authenticationService.Login(
-                request.Email,
-                request.Password);
+            var query = mapper.Map<LoginQuery>(request);
 
-            if (authResult.IsError && authResult.FirstError == Errors.Authentication.InvalidCredentials)
+            var authResult = await mediator.Send(query);
+
+            if (authResult.IsError && 
+                authResult.FirstError == Errors.Authentication.InvalidCredentials)
             {
                 return Problem(
                     statusCode: StatusCodes.Status401Unauthorized,
@@ -44,18 +48,8 @@ namespace GarmentShop.Presentation.Controllers.Auth
             }
 
             return authResult.Match(
-                 authResult => Ok(MapAuthResult(authResult)),
+                 authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),
                 errors => Problem(errors));
-        }
-         
-        private static AuthenticationResponse MapAuthResult(AuthenticationResult authResult)
-        {
-            return new AuthenticationResponse(
-                authResult.User.Id,
-                authResult.User.FirstName,
-                authResult.User.LastName,
-                authResult.User.Email,
-                authResult.Token);
         }
     }
 }

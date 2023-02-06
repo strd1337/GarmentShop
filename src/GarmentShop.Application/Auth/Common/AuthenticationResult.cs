@@ -1,6 +1,6 @@
 ﻿using GarmentShop.Domain.Entities;
 
-namespace GarmentShop.Application.Services.Auth
+namespace GarmentShop.Application.Auth.Common
 {
     public record AuthenticationResult(
         User User,
