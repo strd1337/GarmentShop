@@ -1,6 +1,6 @@
 ﻿using GarmentShop.Application.Common.Interfaces.Auth;
 using GarmentShop.Application.Common.Services;
-using GarmentShop.Domain.Entities;
+using GarmentShop.Domain.AuthenticationAggregate;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -14,14 +14,15 @@ namespace GarmentShop.Infrastructure.Auth
         private readonly IDateTimeProvider dateTimeProvider;
         private readonly JwtSettings jwtSettings;
 
-        public JwtTokenGenerator(IDateTimeProvider dateTimeProvider,
+        public JwtTokenGenerator(
+            IDateTimeProvider dateTimeProvider,
             IOptions<JwtSettings> jwtOptions)
         {
             this.dateTimeProvider = dateTimeProvider;
             this.jwtSettings = jwtOptions.Value;
         }
 
-        public string GenerateToken(User user)
+        public string GenerateToken(Authentication user)
         {
             var signingCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(
@@ -30,10 +31,10 @@ namespace GarmentShop.Infrastructure.Auth
 
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.GivenName, user.FirstName),
-                new Claim(JwtRegisteredClaimNames.FamilyName, user.LastName),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()!),
+                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.Role, user.Role)
             };
 
             var securityToken = new JwtSecurityToken(

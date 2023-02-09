@@ -3,12 +3,12 @@ using GarmentShop.Presentation.Common.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace GarmentShop.Presentation.Controllers
+namespace GarmentShop.Presentation.Controllers.Common
 {
     [ApiController]
     public class ApiController : ControllerBase
     {
-        protected IActionResult Problem(List<Error> errors) 
+        protected IActionResult Problem(List<Error> errors)
         {
             if (errors.Count is 0)
             {
@@ -20,7 +20,7 @@ namespace GarmentShop.Presentation.Controllers
                 return ValidationProblem(errors);
             }
 
-            HttpContext.Items[HttpContextItemKeys.Errors] = errors; 
+            HttpContext.Items[HttpContextItemKeys.Errors] = errors;
 
             return Problem(errors[0]);
         }

@@ -4,7 +4,6 @@ using GarmentShop.Application.Common.Interfaces.Auth;
 using GarmentShop.Application.Common.Interfaces.Persistance;
 using GarmentShop.Application.Auth.Common;
 using GarmentShop.Domain.Common.Errors;
-using GarmentShop.Domain.Entities;
 
 namespace GarmentShop.Application.Auth.Queries.Login
 {
@@ -12,26 +11,24 @@ namespace GarmentShop.Application.Auth.Queries.Login
         IRequestHandler<LoginQuery, ErrorOr<AuthenticationResult>>
     {
         private readonly IJwtTokenGenerator jwtTokenGenerator;
-        private readonly IUserRepository userRepository;
+        private readonly IAuthenticationRepository authenticationRepository;
 
         public LoginQueryHandler(
             IJwtTokenGenerator jwtTokenGenerator,
-            IUserRepository userRepository)
+            IAuthenticationRepository authenticationRepository)
         {
             this.jwtTokenGenerator = jwtTokenGenerator;
-            this.userRepository = userRepository;
+            this.authenticationRepository = authenticationRepository;
         }
 
         public async Task<ErrorOr<AuthenticationResult>> Handle(
             LoginQuery query,
             CancellationToken cancellationToken)
         {
-            if (userRepository.GetUserByEmail(query.Email) is not User user)
-            {
-                return Errors.Authentication.InvalidCredentials;
-            }
+            var user = authenticationRepository.FindUserByEmail(query.Email);
 
-            if (user.Password != query.Password)
+            if (user is null ||
+                !BCrypt.Net.BCrypt.Verify(query.Password, user.PasswordHash))
             {
                 return Errors.Authentication.InvalidCredentials;
             }

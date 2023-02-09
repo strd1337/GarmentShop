@@ -2,6 +2,7 @@
 using GarmentShop.Application.Auth.Queries.Login;
 using GarmentShop.Contracts.Authentication;
 using GarmentShop.Domain.Common.Errors;
+using GarmentShop.Presentation.Controllers.Common;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
