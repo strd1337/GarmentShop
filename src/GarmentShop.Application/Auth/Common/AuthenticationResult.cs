@@ -1,8 +1,8 @@
-﻿using GarmentShop.Domain.Entities;
+﻿using GarmentShop.Domain.AuthenticationAggregate;
 
 namespace GarmentShop.Application.Auth.Common
 {
     public record AuthenticationResult(
-        User User,
+        Authentication User,
         string Token);
 }

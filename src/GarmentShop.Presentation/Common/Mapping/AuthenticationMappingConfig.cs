@@ -9,6 +9,7 @@ namespace GarmentShop.Presentation.Common.Mapping
         public void Register(TypeAdapterConfig config)
         {
             config.NewConfig<AuthenticationResult, AuthenticationResponse>()
+                .Map(dest => dest.Id, src => src.User.Id.Value)
                 .Map(dest => dest, src => src.User);
         }
     }
