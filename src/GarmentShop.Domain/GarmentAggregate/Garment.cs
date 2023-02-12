@@ -1,23 +1,22 @@
 ﻿using GarmentShop.Domain.BrandAggregate.ValueObjects;
 using GarmentShop.Domain.GarmentAggregate.Enums;
 using GarmentShop.Domain.GarmentAggregate.ValueObjects;
+using GarmentShop.Domain.GarmentTypeAggregate.ValueObjects;
 using GarmentShop.Domain.Models;
-using GarmentShop.Domain.SalesAggregate.ValueObjects;
 
 namespace GarmentShop.Domain.GarmentAggregate
 {
     public sealed class Garment : AggregateRoot<GarmentId>
     {
-        private readonly List<SaleId> saleIds = new();
-
-        public string Name { get; private set; } 
-        public string Description { get; private set; } 
+        public string Name { get; private set; }    
+        public string Description { get; private set; }
         public decimal Price { get; private set; }
         public Size Size { get; private set; }
         public Color Color { get; private set; }
         public Material Material { get; private set; }
+        public int AvailableQuantity { get; private set; }
         public BrandId BrandId { get; private set; }
-        public IReadOnlyList<SaleId> SaleIds => saleIds.AsReadOnly();
+        public GarmentTypeId GarmentTypeId { get; private set; }
 
         private Garment(
             GarmentId id,
@@ -27,7 +26,9 @@ namespace GarmentShop.Domain.GarmentAggregate
             Size size,
             Color color,
             Material material,
-            BrandId brandId) : base(id)
+            int availableQuantity,
+            BrandId brandId,
+            GarmentTypeId garmentTypeId) : base(id)
         {
             Name = name;
             Description = description;
@@ -35,7 +36,9 @@ namespace GarmentShop.Domain.GarmentAggregate
             Size = size;
             Color = color;
             Material = material;
+            AvailableQuantity = availableQuantity;
             BrandId = brandId;
+            GarmentTypeId = garmentTypeId;
         }
 
         public static Garment Create(
@@ -45,7 +48,9 @@ namespace GarmentShop.Domain.GarmentAggregate
             Size size,
             Color color,
             Material material,
-            BrandId brandId)
+            int availableQuantity,
+            BrandId brandId,
+            GarmentTypeId garmentTypeId)
         {
             return new(
                 GarmentId.CreateUnique(),
@@ -55,62 +60,15 @@ namespace GarmentShop.Domain.GarmentAggregate
                 size,
                 color,
                 material,
-                brandId);
+                availableQuantity,
+                brandId,
+                garmentTypeId);
         }
 
-        public void AddSale(SaleId saleId)
+#pragma warning disable CS8618
+        private Garment()
         {
-            saleIds.Add(saleId);
         }
-
-        public void RemoveSale(SaleId saleId)
-        {
-            saleIds.Remove(saleId);
-        }
-
-        public void Update(
-            string? name = null,
-            string? description = null,
-            decimal? price = null,
-            Size? size = null,
-            Color? color = null,
-            Material? material = null,
-            BrandId? brandId = null) 
-        {
-            if (name is not null)
-            {
-                Name = name;
-            }
-
-            if (description is not null)
-            {
-                Description = description;
-            }
-
-            if (price.HasValue)
-            {
-                Price = price.Value;
-            }
-
-            if (size is not null)
-            {
-                Size = size.Value;
-            }
-
-            if (color is not null)
-            {
-                Color = color.Value;
-            }
-
-            if (material is not null)
-            {
-                Material = material.Value;
-            }
-
-            if (brandId is not null)
-            {
-                BrandId = brandId;
-            }
-        }
+#pragma warning restore CS8618
     }
 }

@@ -1,76 +1,48 @@
-﻿using GarmentShop.Domain.AuthenticationAggregate.ValueObjects;
-using GarmentShop.Domain.UserAggregate.ValueObjects;
+﻿using GarmentShop.Domain.UserAggregate.ValueObjects;
 using GarmentShop.Domain.Models;
-using GarmentShop.Domain.SalesAggregate.ValueObjects;
+using GarmentShop.Domain.SaleAggregate.ValueObjects;
+using GarmentShop.Domain.UserAggregate.Entities;
 
 namespace GarmentShop.Domain.UserAggregate
 {
     public sealed class User : AggregateRoot<UserId>
-    {
-        private readonly List<SaleId> saleIds = new(); 
+    { 
+        private readonly List<UserRole> roles = new();
+        private readonly List<SaleId> saleIds = new();
 
-        public string FirstName { get; private set; }
-        public string LastName { get; private set; }
-        public string PhoneNumber { get; private set; }
-        public string Address { get; private set; }
-        public string City { get; private set; }
-        public string ZipCode { get; private set; } 
-        public string Country { get; private set; }
-        public AuthenticationId AuthenticationId { get; private set; }
-
+        public UserDetailInformation Information { get; private set; }
+        public IReadOnlyList<UserRole> Roles => roles.AsReadOnly(); 
         public IReadOnlyList<SaleId> SaleIds => saleIds.AsReadOnly();
 
         private User(
-            UserId id, 
-            string firstName,
-            string lastName,
-            string phoneNumber,
-            string address,
-            string city,
-            string zipCode, 
-            string country,
-            AuthenticationId authenticationId) : base(id)
+            UserId id,
+            UserDetailInformation information) : base(id)
         {
-            FirstName = firstName;
-            LastName = lastName;
-            PhoneNumber = phoneNumber;
-            Address = address;
-            City = city;
-            ZipCode = zipCode;
-            Country = country;
-            AuthenticationId = authenticationId;
+            Information = information;
         }
 
         public static User Create(
-            string firstName,
-            string lastName,
-            string phoneNumber,
-            string address,
-            string city,
-            string zipCode,
-            string country,
-            AuthenticationId authenticationId)
+            UserDetailInformation information)
         { 
             return new User(
                 UserId.CreateUnique(),
-                firstName,
-                lastName,
-                phoneNumber,
-                address,
-                city,
-                zipCode,
-                country,
-                authenticationId); 
+                information); 
         }
 
-        public void AddSale(SaleId saleId)
+        public void AddSale(SaleId id)
         {
-            saleIds.Add(saleId);
+            saleIds.Add(id);
         }
-         
-        public void RemoveSale(SaleId saleId)
+
+        public void AddRole(UserRole role)
         {
-            saleIds.Remove(saleId);
+            roles.Add(role);
         }
+
+#pragma warning disable CS8618
+        private User() 
+        {
+        }
+#pragma warning restore CS8618
     }
 }

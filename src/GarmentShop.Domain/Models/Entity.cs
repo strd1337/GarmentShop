@@ -1,13 +1,11 @@
-﻿using System.Drawing;
-
-namespace GarmentShop.Domain.Models
+﻿namespace GarmentShop.Domain.Models
 {
     public abstract class Entity<TId> : IEquatable<Entity<TId>>
         where TId : notnull
     {
         public TId Id { get; protected set; }
 
-        public Entity(TId id)
+        protected Entity(TId id)
         {
             Id = id;
         }
@@ -36,5 +34,11 @@ namespace GarmentShop.Domain.Models
         {
             return Id.GetHashCode();
         }
+
+#pragma warning disable CS8618
+        protected Entity() 
+        {
+        }
+#pragma warning restore CS8618
     }
 }

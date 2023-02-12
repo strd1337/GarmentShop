@@ -12,10 +12,19 @@ namespace GarmentShop.Domain.GarmentAggregate.ValueObjects
         }
 
         public static GarmentId CreateUnique() => new(Guid.NewGuid());
-      
+
+        public static GarmentId Create(Guid value)
+            => new GarmentId(value);
+
         public override IEnumerable<object> GetEqualityComponents()
         {
             yield return Value;
         }
+
+#pragma warning disable CS8618
+        private GarmentId()
+        {
+        }
+#pragma warning restore CS8618
     }
 }

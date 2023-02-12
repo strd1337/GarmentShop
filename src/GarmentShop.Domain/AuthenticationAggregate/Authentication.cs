@@ -1,5 +1,6 @@
 ﻿using GarmentShop.Domain.AuthenticationAggregate.ValueObjects;
 using GarmentShop.Domain.Models;
+using GarmentShop.Domain.UserAggregate.ValueObjects;
 
 namespace GarmentShop.Domain.AuthenticationAggregate
 {
@@ -9,21 +10,21 @@ namespace GarmentShop.Domain.AuthenticationAggregate
         public string Email { get; private set; }
         public string PasswordHash { get; private set; }
         public string Salt { get; private set; }
-        public string Role { get; private set; }
-          
+        public UserId UserId { get; private set; } 
+
         private Authentication(
             AuthenticationId id,
             string userName,
             string email,
             string passwordHash,
             string salt,
-            string role) : base(id)
+            UserId userId) : base(id) 
         {
             UserName = userName;
             Email = email;
             PasswordHash = passwordHash;
             Salt = salt;
-            Role = role;
+            UserId = userId;
         }
 
         public static Authentication Create(
@@ -31,7 +32,7 @@ namespace GarmentShop.Domain.AuthenticationAggregate
             string email,
             string passwordHash,
             string salt,
-            string role)
+            UserId userId)
         {
             return new(
                 AuthenticationId.CreateUnique(),
@@ -39,7 +40,13 @@ namespace GarmentShop.Domain.AuthenticationAggregate
                 email,
                 passwordHash,
                 salt,
-                role);
+                userId);
         }
+
+#pragma warning disable CS8618
+        private Authentication()
+        {
+        }
+#pragma warning restore CS8618
     }
 }

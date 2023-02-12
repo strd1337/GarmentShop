@@ -1,6 +1,7 @@
 ﻿using GarmentShop.Application.Common.Interfaces.Auth;
 using GarmentShop.Application.Common.Services;
 using GarmentShop.Domain.AuthenticationAggregate;
+using GarmentShop.Domain.UserAggregate.Enums;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -22,7 +23,7 @@ namespace GarmentShop.Infrastructure.Auth
             this.jwtSettings = jwtOptions.Value;
         }
 
-        public string GenerateToken(Authentication user)
+        public string GenerateToken(Authentication user) 
         {
             var signingCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(
@@ -34,7 +35,8 @@ namespace GarmentShop.Infrastructure.Auth
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()!),
                 new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.Role, user.Role)
+                new Claim(ClaimTypes.Role, 
+                    Enum.GetName(typeof(RoleType), RoleType.Customer)!)
             };
 
             var securityToken = new JwtSecurityToken(
