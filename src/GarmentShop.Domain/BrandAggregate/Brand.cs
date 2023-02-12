@@ -1,16 +1,12 @@
 ﻿using GarmentShop.Domain.BrandAggregate.ValueObjects;
-using GarmentShop.Domain.GarmentAggregate.ValueObjects;
 using GarmentShop.Domain.Models;
 
 namespace GarmentShop.Domain.BrandAggregate
 {
     public sealed class Brand : AggregateRoot<BrandId>
     {
-        private readonly List<GarmentId> garmentIds = new();
-
         public string Name { get; private set; }
         public string Description { get; private set; }
-        public IReadOnlyList<GarmentId> Garments => garmentIds.AsReadOnly();
 
         private Brand(
             BrandId id,
@@ -30,30 +26,12 @@ namespace GarmentShop.Domain.BrandAggregate
                 name,
                 description);
         }
-         
-        public void AddGarment(GarmentId garmentId)
-        { 
-            garmentIds.Add(garmentId);
-        }
 
-        public void Update(
-            string? name = null, 
-            string? description = null)
-        {
-            if (name is not null)
-            {
-                Name = name;
-            }
 
-            if (description is not null)
-            {
-                Description = description;
-            }
-        }
-         
-        public void RemoveGarment(GarmentId garmentId)
+#pragma warning disable CS8618
+        private Brand()
         {
-            garmentIds.Remove(garmentId);
         }
+#pragma warning restore CS8618
     }
 }

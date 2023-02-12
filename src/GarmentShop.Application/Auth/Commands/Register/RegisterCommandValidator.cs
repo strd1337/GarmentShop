@@ -9,7 +9,7 @@ namespace GarmentShop.Application.Auth.Commands.Register
             RuleFor(x => x.UserName)
                 .NotEmpty().WithMessage("Username is required")
                 .MinimumLength(5).WithMessage("Username must have at least 5 characters")
-                .MaximumLength(15).WithMessage("Username cannot have more than 20 characters");
+                .MaximumLength(15).WithMessage("Username cannot have more than 15 characters");
 
             RuleFor(r => r.Email).NotEmpty().WithMessage("Email is required")
                 .EmailAddress().WithMessage("Email is not valid");

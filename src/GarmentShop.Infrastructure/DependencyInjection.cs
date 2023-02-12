@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.Options;
+using Microsoft.EntityFrameworkCore;
+using GarmentShop.Infrastructure.Persistance.Repositories;
 
 namespace GarmentShop.Infrastructure
 {
@@ -32,7 +34,11 @@ namespace GarmentShop.Infrastructure
             this IServiceCollection services,
             ConfigurationManager configuration)
         {
+            services.AddDbContext<GarmentShopDbContext>(options =>
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+
             services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
 
             return services;
         }

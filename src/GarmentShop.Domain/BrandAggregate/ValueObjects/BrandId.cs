@@ -13,9 +13,18 @@ namespace GarmentShop.Domain.BrandAggregate.ValueObjects
 
         public static BrandId CreateUnique() => new(Guid.NewGuid());
 
+        public static BrandId Create(Guid value)
+            => new BrandId(value);
+
         public override IEnumerable<object> GetEqualityComponents()
         {
             yield return Value;
         }
+
+#pragma warning disable CS8618
+        private BrandId()
+        {
+        }
+#pragma warning restore CS8618
     }
 }

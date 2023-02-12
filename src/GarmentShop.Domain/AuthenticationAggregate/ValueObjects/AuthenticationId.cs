@@ -13,9 +13,18 @@ namespace GarmentShop.Domain.AuthenticationAggregate.ValueObjects
 
         public static AuthenticationId CreateUnique() => new(Guid.NewGuid());
 
+        public static AuthenticationId Create(Guid value) 
+            => new AuthenticationId(value);
+
         public override IEnumerable<object> GetEqualityComponents()
         {
             yield return Value;
         }
+
+#pragma warning disable CS8618
+        private AuthenticationId()
+        {
+        }
+#pragma warning restore CS8618
     }
 }
