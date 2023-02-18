@@ -1,58 +1,50 @@
 ﻿using ErrorOr;
-using MediatR;
 using GarmentShop.Application.Common.Interfaces.Auth;
-using GarmentShop.Application.Common.Interfaces.Persistance;
 using GarmentShop.Domain.Common.Errors;
 using GarmentShop.Application.Auth.Common;
 using GarmentShop.Domain.AuthenticationAggregate;
 using GarmentShop.Domain.UserAggregate;
 using GarmentShop.Domain.UserAggregate.ValueObjects;
-using GarmentShop.Domain.UserAggregate.Entities;
 using GarmentShop.Domain.UserAggregate.Enums;
+using GarmentShop.Application.Common.CQRS;
+using GarmentShop.Application.Common.Interfaces.Persistance.CommonRepositories;
 
 namespace GarmentShop.Application.Auth.Commands.Register
 {
     public class RegisterCommandHandler :
-        IRequestHandler<RegisterCommand, ErrorOr<AuthenticationResult>>
+        ICommandHandler<RegisterCommand, AuthenticationResult>
     {
         private readonly IJwtTokenGenerator jwtTokenGenerator;
-        private readonly IAuthenticationRepository authenticationRepository;
-        private readonly IUserRepository userRepository;
+        private readonly IUnitOfWork unitOfWork;
 
         public RegisterCommandHandler(
             IJwtTokenGenerator jwtTokenGenerator, 
-            IAuthenticationRepository authenticationRepository,
-            IUserRepository userRepository)
+            IUnitOfWork unitOfWork)
         {
             this.jwtTokenGenerator = jwtTokenGenerator;
-            this.authenticationRepository = authenticationRepository;
-            this.userRepository = userRepository;
+            this.unitOfWork = unitOfWork;
         }
 
         public async Task<ErrorOr<AuthenticationResult>> Handle(
             RegisterCommand command,  
             CancellationToken cancellationToken)
         {
-            if (authenticationRepository.FindUserByEmail(command.Email) is not null)
+            if (await unitOfWork.AuthenticationRepository
+                .GetByEmail(command.Email) is not null)
             {
                 return Errors.User.DuplicateEmail;
             }
 
-            var role = UserRole.Create("Customer", RoleType.Customer);
-            
-            role.AddPermission(Permission.Create("AddToCart", 
-                PermissionType.AddToCart));
-            role.AddPermission(Permission.Create("PlaceOrder", 
-                PermissionType.PlaceOrder));
-            role.AddPermission(Permission.Create("ViewOrderHistory", 
-                PermissionType.ViewOrderHistory));
-            role.AddPermission(Permission.Create("UpdateShippingAddress", 
-                PermissionType.UpdateShippingAddress));
+            var role = await unitOfWork.RoleRepository
+                .FindByNameAsync(
+                    Enum.GetName(typeof(RoleType), RoleType.Customer)!,
+                    cancellationToken);
 
             var user = User.Create(UserDetailInformation.CreateNew());
-            user.AddRole(role);
 
-            userRepository.Create(user);
+            await unitOfWork.UserRepository.AddRoleAsync(user, role!);
+
+            await unitOfWork.UserRepository.AddAsync(user, cancellationToken);
 
             string salt = BCrypt.Net.BCrypt.GenerateSalt();
             string passwordHash = BCrypt.Net.BCrypt
@@ -65,8 +57,11 @@ namespace GarmentShop.Application.Auth.Commands.Register
                 salt,
                 user.Id); 
 
-            authenticationRepository.CreateUser(registeringUser);
-        
+            await unitOfWork.AuthenticationRepository
+                .AddAsync(registeringUser, cancellationToken);
+
+            await unitOfWork.SaveChangesAsync(cancellationToken);
+
             var token = jwtTokenGenerator.GenerateToken(registeringUser);
 
             return new AuthenticationResult(

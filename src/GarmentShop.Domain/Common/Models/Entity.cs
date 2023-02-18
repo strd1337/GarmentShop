@@ -1,9 +1,11 @@
-﻿namespace GarmentShop.Domain.Models
+﻿namespace GarmentShop.Domain.Common.Models
 {
     public abstract class Entity<TId> : IEquatable<Entity<TId>>
         where TId : notnull
     {
         public TId Id { get; protected set; }
+        public DateTime CreatedDate { get; protected set; } = DateTime.Now;
+        public DateTime ModifiedDate { get; protected set; } = DateTime.Now;
 
         protected Entity(TId id)
         {
@@ -17,7 +19,7 @@
 
         public bool Equals(Entity<TId>? other)
         {
-           return Equals((object?)other);  
+            return Equals((object?)other);
         }
 
         public static bool operator ==(Entity<TId> left, Entity<TId> right)
@@ -36,7 +38,7 @@
         }
 
 #pragma warning disable CS8618
-        protected Entity() 
+        protected Entity()
         {
         }
 #pragma warning restore CS8618

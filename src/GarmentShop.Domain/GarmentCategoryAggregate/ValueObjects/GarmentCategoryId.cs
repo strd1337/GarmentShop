@@ -1,4 +1,4 @@
-﻿using GarmentShop.Domain.Models;
+﻿using GarmentShop.Domain.Common.Models;
 
 namespace GarmentShop.Domain.GarmentCategoryAggregate.ValueObjects
 {

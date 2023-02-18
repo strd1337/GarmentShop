@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GarmentShop.Infrastructure.Migrations
 {
     [DbContext(typeof(GarmentShopDbContext))]
-    [Migration("20230212203432_InitialCreate")]
+    [Migration("20230217120919_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -30,10 +30,16 @@ namespace GarmentShop.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
@@ -63,10 +69,16 @@ namespace GarmentShop.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -76,6 +88,37 @@ namespace GarmentShop.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Brands");
+                });
+
+            modelBuilder.Entity("GarmentShop.Domain.Common.Outbox.OutboxMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Error")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("OccurredOnUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ProcessedOnUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OutboxMessages");
                 });
 
             modelBuilder.Entity("GarmentShop.Domain.GarmentAggregate.Garment", b =>
@@ -94,6 +137,9 @@ namespace GarmentShop.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -106,6 +152,9 @@ namespace GarmentShop.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -131,10 +180,16 @@ namespace GarmentShop.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -151,6 +206,9 @@ namespace GarmentShop.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -158,6 +216,9 @@ namespace GarmentShop.Infrastructure.Migrations
 
                     b.Property<Guid>("GarmentCategoryId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -174,6 +235,12 @@ namespace GarmentShop.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
@@ -182,10 +249,69 @@ namespace GarmentShop.Infrastructure.Migrations
                     b.ToTable("Sales", (string)null);
                 });
 
+            modelBuilder.Entity("GarmentShop.Domain.UserAggregate.Entities.Role", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("Name");
+
+                    b.Property<int>("Type")
+                        .HasMaxLength(50)
+                        .HasColumnType("int")
+                        .HasColumnName("Type");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("873299d9-e0be-4fc2-89ff-7952ae603174"),
+                            CreatedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5854),
+                            ModifiedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5860),
+                            Name = "Customer",
+                            Type = 0
+                        },
+                        new
+                        {
+                            Id = new Guid("2d25cec7-d3d6-449d-a03d-70b8d0f27b92"),
+                            CreatedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5864),
+                            ModifiedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5865),
+                            Name = "Manager",
+                            Type = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("94995d3a-f7f4-4e9c-9f25-c15a12be955f"),
+                            CreatedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5868),
+                            ModifiedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5870),
+                            Name = "Admin",
+                            Type = 2
+                        });
+                });
+
             modelBuilder.Entity("GarmentShop.Domain.UserAggregate.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -202,6 +328,12 @@ namespace GarmentShop.Infrastructure.Migrations
 
                             b1.Property<Guid>("SaleId")
                                 .HasColumnType("uniqueidentifier");
+
+                            b1.Property<DateTime>("CreatedDate")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<DateTime>("ModifiedDate")
+                                .HasColumnType("datetime2");
 
                             b1.HasKey("Id", "SaleId");
 
@@ -289,9 +421,15 @@ namespace GarmentShop.Infrastructure.Migrations
                                     b2.Property<Guid>("SaleId")
                                         .HasColumnType("uniqueidentifier");
 
+                                    b2.Property<DateTime>("CreatedDate")
+                                        .HasColumnType("datetime2");
+
                                     b2.Property<Guid>("GarmentId")
                                         .HasColumnType("uniqueidentifier")
                                         .HasColumnName("GarmentId");
+
+                                    b2.Property<DateTime>("ModifiedDate")
+                                        .HasColumnType("datetime2");
 
                                     b2.Property<int>("Quantity")
                                         .HasColumnType("int")
@@ -322,6 +460,157 @@ namespace GarmentShop.Infrastructure.Migrations
                         });
 
                     b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("GarmentShop.Domain.UserAggregate.Entities.Role", b =>
+                {
+                    b.OwnsMany("GarmentShop.Domain.UserAggregate.Entities.Permission", "Permissions", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uniqueidentifier")
+                                .HasColumnName("PermissionId");
+
+                            b1.Property<Guid>("RoleId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<DateTime>("CreatedDate")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<DateTime>("ModifiedDate")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<string>("Name")
+                                .IsRequired()
+                                .HasMaxLength(50)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("Name");
+
+                            b1.Property<int>("Type")
+                                .HasMaxLength(50)
+                                .HasColumnType("int")
+                                .HasColumnName("Type");
+
+                            b1.HasKey("Id", "RoleId");
+
+                            b1.HasIndex("RoleId");
+
+                            b1.ToTable("RolePermissions", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("RoleId");
+
+                            b1.HasData(
+                                new
+                                {
+                                    Id = new Guid("e8363d05-f28d-4447-b022-953f8f63d7ce"),
+                                    RoleId = new Guid("873299d9-e0be-4fc2-89ff-7952ae603174"),
+                                    CreatedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5332),
+                                    ModifiedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5396),
+                                    Name = "AddToCart",
+                                    Type = 0
+                                },
+                                new
+                                {
+                                    Id = new Guid("39c92b90-1af0-496f-9de5-0fa7babcab37"),
+                                    RoleId = new Guid("873299d9-e0be-4fc2-89ff-7952ae603174"),
+                                    CreatedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5401),
+                                    ModifiedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5403),
+                                    Name = "PlaceOrder",
+                                    Type = 1
+                                },
+                                new
+                                {
+                                    Id = new Guid("0d618911-8591-45ee-8c56-ea05820a5390"),
+                                    RoleId = new Guid("873299d9-e0be-4fc2-89ff-7952ae603174"),
+                                    CreatedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5407),
+                                    ModifiedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5409),
+                                    Name = "ViewOrderHistory",
+                                    Type = 2
+                                },
+                                new
+                                {
+                                    Id = new Guid("3787eecc-7b14-4c66-886e-cf5a3aa14270"),
+                                    RoleId = new Guid("873299d9-e0be-4fc2-89ff-7952ae603174"),
+                                    CreatedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5413),
+                                    ModifiedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5415),
+                                    Name = "UpdateShippingAddress",
+                                    Type = 3
+                                },
+                                new
+                                {
+                                    Id = new Guid("24661828-46b5-456b-a7e8-b40e2ce4b660"),
+                                    RoleId = new Guid("2d25cec7-d3d6-449d-a03d-70b8d0f27b92"),
+                                    CreatedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5419),
+                                    ModifiedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5421),
+                                    Name = "EditItems",
+                                    Type = 4
+                                },
+                                new
+                                {
+                                    Id = new Guid("4fa7da2b-5364-4c63-a095-ddb805f38946"),
+                                    RoleId = new Guid("2d25cec7-d3d6-449d-a03d-70b8d0f27b92"),
+                                    CreatedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5433),
+                                    ModifiedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5434),
+                                    Name = "DeleteItems",
+                                    Type = 5
+                                },
+                                new
+                                {
+                                    Id = new Guid("53543dc3-b5a6-41f1-83ac-90e4e54778c9"),
+                                    RoleId = new Guid("2d25cec7-d3d6-449d-a03d-70b8d0f27b92"),
+                                    CreatedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5439),
+                                    ModifiedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5440),
+                                    Name = "AddItems",
+                                    Type = 6
+                                },
+                                new
+                                {
+                                    Id = new Guid("22668925-fad1-4bd2-8fce-5152157b8b06"),
+                                    RoleId = new Guid("94995d3a-f7f4-4e9c-9f25-c15a12be955f"),
+                                    CreatedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5444),
+                                    ModifiedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5446),
+                                    Name = "ManageCustomers",
+                                    Type = 7
+                                },
+                                new
+                                {
+                                    Id = new Guid("ae370106-f7ff-4c78-9b7c-e691a4385913"),
+                                    RoleId = new Guid("94995d3a-f7f4-4e9c-9f25-c15a12be955f"),
+                                    CreatedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5450),
+                                    ModifiedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5452),
+                                    Name = "ManageUsers",
+                                    Type = 8
+                                },
+                                new
+                                {
+                                    Id = new Guid("a95eae0f-c7f4-408d-8010-b3d031bd837f"),
+                                    RoleId = new Guid("94995d3a-f7f4-4e9c-9f25-c15a12be955f"),
+                                    CreatedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5456),
+                                    ModifiedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5458),
+                                    Name = "ManageRoles",
+                                    Type = 9
+                                },
+                                new
+                                {
+                                    Id = new Guid("9925f28f-4606-4cef-9117-19693fa49c5c"),
+                                    RoleId = new Guid("94995d3a-f7f4-4e9c-9f25-c15a12be955f"),
+                                    CreatedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5462),
+                                    ModifiedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5463),
+                                    Name = "ManagePermissions",
+                                    Type = 10
+                                },
+                                new
+                                {
+                                    Id = new Guid("5f5c9eeb-b41d-4e67-a34b-4c0bf93ec9a0"),
+                                    RoleId = new Guid("94995d3a-f7f4-4e9c-9f25-c15a12be955f"),
+                                    CreatedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5467),
+                                    ModifiedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5469),
+                                    Name = "ManageOrders",
+                                    Type = 11
+                                });
+                        });
+
+                    b.Navigation("Permissions");
                 });
 
             modelBuilder.Entity("GarmentShop.Domain.UserAggregate.User", b =>
@@ -357,63 +646,36 @@ namespace GarmentShop.Infrastructure.Migrations
                                 .HasColumnType("uniqueidentifier")
                                 .HasColumnName("UserRoleId");
 
+                            b1.Property<Guid>("RoleId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<DateTime>("CreatedDate")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<DateTime>("ModifiedDate")
+                                .HasColumnType("datetime2");
+
                             b1.Property<Guid>("UserId")
                                 .HasColumnType("uniqueidentifier");
 
-                            b1.Property<string>("Name")
-                                .IsRequired()
-                                .HasMaxLength(50)
-                                .HasColumnType("nvarchar(50)")
-                                .HasColumnName("Name");
+                            b1.HasKey("Id", "RoleId");
 
-                            b1.Property<int>("Type")
-                                .HasMaxLength(50)
-                                .HasColumnType("int")
-                                .HasColumnName("Type");
-
-                            b1.HasKey("Id", "UserId");
+                            b1.HasIndex("RoleId");
 
                             b1.HasIndex("UserId");
 
                             b1.ToTable("UserRoles", (string)null);
 
+                            b1.HasOne("GarmentShop.Domain.UserAggregate.Entities.Role", "Role")
+                                .WithMany()
+                                .HasForeignKey("RoleId")
+                                .OnDelete(DeleteBehavior.Cascade)
+                                .IsRequired();
+
                             b1.WithOwner()
                                 .HasForeignKey("UserId");
 
-                            b1.OwnsMany("GarmentShop.Domain.UserAggregate.Entities.Permission", "Permissions", b2 =>
-                                {
-                                    b2.Property<Guid>("Id")
-                                        .HasColumnType("uniqueidentifier")
-                                        .HasColumnName("PermissionId");
-
-                                    b2.Property<Guid>("UserRoleId")
-                                        .HasColumnType("uniqueidentifier");
-
-                                    b2.Property<Guid>("UserId")
-                                        .HasColumnType("uniqueidentifier");
-
-                                    b2.Property<string>("Name")
-                                        .IsRequired()
-                                        .HasMaxLength(50)
-                                        .HasColumnType("nvarchar(50)")
-                                        .HasColumnName("Name");
-
-                                    b2.Property<int>("Type")
-                                        .HasMaxLength(50)
-                                        .HasColumnType("int")
-                                        .HasColumnName("Type");
-
-                                    b2.HasKey("Id", "UserRoleId", "UserId");
-
-                                    b2.HasIndex("UserRoleId", "UserId");
-
-                                    b2.ToTable("RolePermissions", (string)null);
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("UserRoleId", "UserId");
-                                });
-
-                            b1.Navigation("Permissions");
+                            b1.Navigation("Role");
                         });
 
                     b.OwnsOne("GarmentShop.Domain.UserAggregate.ValueObjects.UserDetailInformation", "Information", b1 =>

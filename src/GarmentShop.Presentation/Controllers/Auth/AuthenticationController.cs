@@ -22,11 +22,13 @@ namespace GarmentShop.Presentation.Controllers.Auth
         }
         
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterRequest request)
+        public async Task<IActionResult> Register(
+            RegisterRequest request,
+            CancellationToken cancellationToken)
         {
             var command = mapper.Map<RegisterCommand>(request);
 
-            var authResult = await mediator.Send(command);
+            var authResult = await mediator.Send(command, cancellationToken);
 
             return authResult.Match(
                 authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),
@@ -34,11 +36,13 @@ namespace GarmentShop.Presentation.Controllers.Auth
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginRequest request)
+        public async Task<IActionResult> Login(
+            LoginRequest request,
+            CancellationToken cancellationToken)
         {
             var query = mapper.Map<LoginQuery>(request);
 
-            var authResult = await mediator.Send(query);
+            var authResult = await mediator.Send(query, cancellationToken);
 
             if (authResult.IsError && 
                 authResult.FirstError == Errors.Authentication.InvalidCredentials)

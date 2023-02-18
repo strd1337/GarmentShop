@@ -1,6 +1,6 @@
-﻿using GarmentShop.Domain.GarmentCategoryAggregate.ValueObjects;
+﻿using GarmentShop.Domain.Common.Models;
+using GarmentShop.Domain.GarmentCategoryAggregate.ValueObjects;
 using GarmentShop.Domain.GarmentTypeAggregate.ValueObjects;
-using GarmentShop.Domain.Models;
 
 namespace GarmentShop.Domain.GarmentTypeAggregate
 {

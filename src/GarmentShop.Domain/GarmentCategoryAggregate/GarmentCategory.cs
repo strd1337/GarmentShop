@@ -1,5 +1,5 @@
-﻿using GarmentShop.Domain.GarmentCategoryAggregate.ValueObjects;
-using GarmentShop.Domain.Models;
+﻿using GarmentShop.Domain.Common.Models;
+using GarmentShop.Domain.GarmentCategoryAggregate.ValueObjects;
 
 namespace GarmentShop.Domain.GarmentCategoryAggregate
 {
