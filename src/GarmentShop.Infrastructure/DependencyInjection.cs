@@ -4,14 +4,12 @@ using GarmentShop.Infrastructure.Auth;
 using GarmentShop.Infrastructure.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
-using GarmentShop.Application.Common.Interfaces.Persistance;
-using GarmentShop.Infrastructure.Persistance;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.Options;
-using Microsoft.EntityFrameworkCore;
-using GarmentShop.Infrastructure.Persistance.Repositories;
+using GarmentShop.Application.Common.Interfaces.Persistance.CommonRepositories;
+using GarmentShop.Infrastructure.Persistance.Repositories.Common;
 
 namespace GarmentShop.Infrastructure
 {
@@ -34,11 +32,9 @@ namespace GarmentShop.Infrastructure
             this IServiceCollection services,
             ConfigurationManager configuration)
         {
-            services.AddDbContext<GarmentShopDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+            // conf for now
 
-            services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
-            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;
         }

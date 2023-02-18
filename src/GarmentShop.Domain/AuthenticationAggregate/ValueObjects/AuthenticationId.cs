@@ -1,7 +1,7 @@
-﻿using GarmentShop.Domain.Models;
+﻿using GarmentShop.Domain.Common.Models;
 
 namespace GarmentShop.Domain.AuthenticationAggregate.ValueObjects
-{ 
+{
     public sealed class AuthenticationId : ValueObject
     {
         public Guid Value { get; }

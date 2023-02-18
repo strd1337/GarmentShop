@@ -1,40 +1,24 @@
-﻿using GarmentShop.Domain.Models;
-using GarmentShop.Domain.UserAggregate.Enums;
+﻿using GarmentShop.Domain.Common.Models;
 using GarmentShop.Domain.UserAggregate.ValueObjects;
 
 namespace GarmentShop.Domain.UserAggregate.Entities
 {
     public sealed class UserRole : Entity<UserRoleId>
     {
-        private readonly List<Permission> permissions = new(); 
-
-        public string Name { get; private set; }
-        public RoleType Type { get; private set; }
-        public IReadOnlyList<Permission> Permissions 
-            => permissions.AsReadOnly();
-
+        public Role Role { get; private set; }
+       
         private UserRole(
             UserRoleId id,
-            string name,
-            RoleType type) : base(id)
+            Role role) : base(id)
         {
-            Name = name;
-            Type = type;
+            Role = role;
         }
 
-        public static UserRole Create(
-            string name,
-            RoleType type)
+        public static UserRole Create(Role role)
         {
             return new(
                 UserRoleId.CreateUnique(),
-                name,
-                type);
-        }
-
-        public void AddPermission(Permission permission)
-        {
-            permissions.Add(permission);
+                role);
         }
 
 #pragma warning disable CS8618

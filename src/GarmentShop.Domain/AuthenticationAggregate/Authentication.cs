@@ -1,5 +1,6 @@
 ﻿using GarmentShop.Domain.AuthenticationAggregate.ValueObjects;
-using GarmentShop.Domain.Models;
+using GarmentShop.Domain.Common.Models;
+using GarmentShop.Domain.Events;
 using GarmentShop.Domain.UserAggregate.ValueObjects;
 
 namespace GarmentShop.Domain.AuthenticationAggregate
@@ -34,15 +35,22 @@ namespace GarmentShop.Domain.AuthenticationAggregate
             string salt,
             UserId userId)
         {
-            return new(
+            var registeredUser = new Authentication(
                 AuthenticationId.CreateUnique(),
                 userName,
                 email,
                 passwordHash,
                 salt,
                 userId);
-        }
 
+            registeredUser.RaiseDomainEvent(
+                new UserRegisteredEvent(
+                    registeredUser.Id, 
+                    registeredUser.UserId));
+
+            return registeredUser;
+        }
+                
 #pragma warning disable CS8618
         private Authentication()
         {

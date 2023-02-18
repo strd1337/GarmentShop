@@ -1,9 +1,9 @@
-﻿namespace GarmentShop.Domain.Models
+﻿namespace GarmentShop.Domain.Common.Models
 {
-    public abstract class ValueObject : IEquatable<ValueObject> 
+    public abstract class ValueObject : IEquatable<ValueObject>
     {
         public abstract IEnumerable<object> GetEqualityComponents();
-        
+
         public override bool Equals(object? obj)
         {
             if (obj is null || obj.GetType() != GetType()) return false;
@@ -14,7 +14,7 @@
                 .SequenceEqual(valueObject.GetEqualityComponents());
         }
 
-        public static bool operator ==(ValueObject left, ValueObject right) 
+        public static bool operator ==(ValueObject left, ValueObject right)
         {
             return Equals(left, right);
         }

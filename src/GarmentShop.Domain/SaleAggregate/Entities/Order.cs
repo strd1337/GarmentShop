@@ -1,4 +1,4 @@
-﻿using GarmentShop.Domain.Models;
+﻿using GarmentShop.Domain.Common.Models;
 using GarmentShop.Domain.SaleAggregate.ValueObjects;
 
 namespace GarmentShop.Domain.SaleAggregate.Entities

@@ -1,7 +1,7 @@
 ﻿using GarmentShop.Domain.UserAggregate.ValueObjects;
-using GarmentShop.Domain.Models;
 using GarmentShop.Domain.SaleAggregate.ValueObjects;
 using GarmentShop.Domain.UserAggregate.Entities;
+using GarmentShop.Domain.Common.Models;
 
 namespace GarmentShop.Domain.UserAggregate
 {
@@ -34,9 +34,9 @@ namespace GarmentShop.Domain.UserAggregate
             saleIds.Add(id);
         }
 
-        public void AddRole(UserRole role)
+        public void AddRole(Role role)
         {
-            roles.Add(role);
+            roles.Add(UserRole.Create(role));
         }
 
 #pragma warning disable CS8618

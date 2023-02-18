@@ -1,5 +1,5 @@
 ﻿using GarmentShop.Domain.BrandAggregate.ValueObjects;
-using GarmentShop.Domain.Models;
+using GarmentShop.Domain.Common.Models;
 
 namespace GarmentShop.Domain.BrandAggregate
 {

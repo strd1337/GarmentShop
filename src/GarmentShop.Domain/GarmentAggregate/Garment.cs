@@ -1,8 +1,8 @@
 ﻿using GarmentShop.Domain.BrandAggregate.ValueObjects;
+using GarmentShop.Domain.Common.Models;
 using GarmentShop.Domain.GarmentAggregate.Enums;
 using GarmentShop.Domain.GarmentAggregate.ValueObjects;
 using GarmentShop.Domain.GarmentTypeAggregate.ValueObjects;
-using GarmentShop.Domain.Models;
 
 namespace GarmentShop.Domain.GarmentAggregate
 {

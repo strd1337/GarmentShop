@@ -4,6 +4,6 @@ namespace GarmentShop.Application.Common.Interfaces.Auth
 {
     public interface IJwtTokenGenerator
     {
-        string GenerateToken(Authentication user);
+       string GenerateToken(Authentication user);
     }
 }

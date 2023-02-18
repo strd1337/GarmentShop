@@ -1,31 +1,31 @@
 ﻿using ErrorOr;
-using MediatR;
 using GarmentShop.Application.Common.Interfaces.Auth;
-using GarmentShop.Application.Common.Interfaces.Persistance;
 using GarmentShop.Application.Auth.Common;
 using GarmentShop.Domain.Common.Errors;
+using GarmentShop.Application.Common.CQRS;
+using GarmentShop.Application.Common.Interfaces.Persistance.CommonRepositories;
 
 namespace GarmentShop.Application.Auth.Queries.Login
 {
     public class LoginQueryHandler :
-        IRequestHandler<LoginQuery, ErrorOr<AuthenticationResult>>
+        IQueryHandler<LoginQuery, AuthenticationResult>
     {
         private readonly IJwtTokenGenerator jwtTokenGenerator;
-        private readonly IAuthenticationRepository authenticationRepository;
+        private readonly IUnitOfWork unitOfWork;
 
         public LoginQueryHandler(
             IJwtTokenGenerator jwtTokenGenerator,
-            IAuthenticationRepository authenticationRepository)
+            IUnitOfWork unitOfWork)
         {
             this.jwtTokenGenerator = jwtTokenGenerator;
-            this.authenticationRepository = authenticationRepository;
+            this.unitOfWork = unitOfWork;
         }
 
         public async Task<ErrorOr<AuthenticationResult>> Handle(
             LoginQuery query,
             CancellationToken cancellationToken)
         {
-            var user = authenticationRepository.FindUserByEmail(query.Email);
+            var user = await unitOfWork.AuthenticationRepository.GetByEmail(query.Email);
 
             if (user is null ||
                 !BCrypt.Net.BCrypt.Verify(query.Password, user.PasswordHash))
