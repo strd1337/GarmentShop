@@ -1,5 +1,4 @@
 ﻿using GarmentShop.Application.Auth.Common;
-using GarmentShop.Application.Users.Queries.GetUserInfo;
 using GarmentShop.Contracts.Authentication;
 using Mapster;
 

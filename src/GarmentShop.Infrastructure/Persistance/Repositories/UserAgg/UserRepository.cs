@@ -22,6 +22,7 @@ namespace GarmentShop.Infrastructure.Persistance.Repositories.UserAgg
         {
              return await dbContext.Users
                  .Include(u => u.Roles)
+                 .ThenInclude(u => u.Role)
                  .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
         }
 

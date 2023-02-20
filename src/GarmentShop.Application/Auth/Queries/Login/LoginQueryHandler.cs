@@ -4,6 +4,11 @@ using GarmentShop.Application.Auth.Common;
 using GarmentShop.Domain.Common.Errors;
 using GarmentShop.Application.Common.CQRS;
 using GarmentShop.Application.Common.Interfaces.Persistance.CommonRepositories;
+using GarmentShop.Domain.AuthenticationAggregate.ValueObjects;
+using GarmentShop.Domain.AuthenticationAggregate;
+using GarmentShop.Domain.UserAggregate.ValueObjects;
+using GarmentShop.Domain.UserAggregate;
+using GarmentShop.Application.Common.Interfaces.Persistance.UserRepositories;
 
 namespace GarmentShop.Application.Auth.Queries.Login
 {
@@ -25,18 +30,28 @@ namespace GarmentShop.Application.Auth.Queries.Login
             LoginQuery query,
             CancellationToken cancellationToken)
         {
-            var user = await unitOfWork.AuthenticationRepository.GetByEmail(query.Email);
+            var authUser = await unitOfWork
+                .GetRepository<Authentication, AuthenticationId>()
+                .FirstOrDefaultAsync(
+                    x => x.Email == query.Email,
+                    cancellationToken);
 
-            if (user is null ||
-                !BCrypt.Net.BCrypt.Verify(query.Password, user.PasswordHash))
+            if (authUser is null ||
+                !BCrypt.Net.BCrypt.Verify(query.Password, authUser.PasswordHash))
             {
                 return Errors.Authentication.InvalidCredentials;
             }
 
-            var token = jwtTokenGenerator.GenerateToken(user);
+            var userRepository = unitOfWork.GetRepository<User, UserId>(true) 
+                as IUserRepository;
+
+            var user = await userRepository!
+                .FindByIdAsync(authUser.UserId, cancellationToken);
+
+            var token = jwtTokenGenerator.GenerateToken(authUser, user!);
 
             return new AuthenticationResult(
-                user,
+                authUser,
                 token);
         }
     }

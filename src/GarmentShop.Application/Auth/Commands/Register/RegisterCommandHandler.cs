@@ -8,6 +8,9 @@ using GarmentShop.Domain.UserAggregate.ValueObjects;
 using GarmentShop.Domain.UserAggregate.Enums;
 using GarmentShop.Application.Common.CQRS;
 using GarmentShop.Application.Common.Interfaces.Persistance.CommonRepositories;
+using GarmentShop.Domain.AuthenticationAggregate.ValueObjects;
+using GarmentShop.Domain.UserAggregate.Entities;
+using GarmentShop.Application.Common.Interfaces.Persistance.UserRepositories;
 
 namespace GarmentShop.Application.Auth.Commands.Register
 {
@@ -29,22 +32,30 @@ namespace GarmentShop.Application.Auth.Commands.Register
             RegisterCommand command,  
             CancellationToken cancellationToken)
         {
-            if (await unitOfWork.AuthenticationRepository
-                .GetByEmail(command.Email) is not null)
+            if (await unitOfWork
+                .GetRepository<Authentication, AuthenticationId>()
+                .FirstOrDefaultAsync(
+                    x => x.Email == command.Email,
+                    cancellationToken) 
+                is not null)
             {
                 return Errors.User.DuplicateEmail;
             }
 
-            var role = await unitOfWork.RoleRepository
-                .FindByNameAsync(
-                    Enum.GetName(typeof(RoleType), RoleType.Customer)!,
+            var role = await unitOfWork
+                 .GetRepository<Role, RoleId>()
+                 .FirstOrDefaultAsync(
+                    x => x.Name == Enum.GetName(typeof(RoleType), RoleType.Customer)!,
                     cancellationToken);
 
             var user = User.Create(UserDetailInformation.CreateNew());
 
-            await unitOfWork.UserRepository.AddRoleAsync(user, role!);
+            var userRepository = unitOfWork.GetRepository<User, UserId>(true) 
+                as IUserRepository;
+ 
+            await userRepository!.AddRoleAsync(user, role!);
 
-            await unitOfWork.UserRepository.AddAsync(user, cancellationToken);
+            await userRepository.AddAsync(user, cancellationToken);
 
             string salt = BCrypt.Net.BCrypt.GenerateSalt();
             string passwordHash = BCrypt.Net.BCrypt
@@ -57,12 +68,13 @@ namespace GarmentShop.Application.Auth.Commands.Register
                 salt,
                 user.Id); 
 
-            await unitOfWork.AuthenticationRepository
+            await unitOfWork
+                .GetRepository<Authentication, AuthenticationId>()
                 .AddAsync(registeringUser, cancellationToken);
 
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            var token = jwtTokenGenerator.GenerateToken(registeringUser);
+            var token = jwtTokenGenerator.GenerateToken(registeringUser, user);
 
             return new AuthenticationResult(
                 registeringUser,

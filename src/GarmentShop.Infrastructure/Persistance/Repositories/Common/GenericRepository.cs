@@ -5,9 +5,10 @@ using System.Linq.Expressions;
 
 namespace GarmentShop.Infrastructure.Persistance.Repositories.Common
 {
-    public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId>
-        where TEntity : Entity<TId>
-        where TId : notnull
+    public class GenericRepository<TEntity, TId> 
+        : IGenericRepository<TEntity, TId>
+            where TEntity : Entity<TId>
+            where TId : notnull
     {
         protected GarmentShopDbContext dbContext;
 
@@ -20,7 +21,8 @@ namespace GarmentShop.Infrastructure.Persistance.Repositories.Common
             TId id, 
             CancellationToken cancellationToken = default)
         {
-            return await dbContext.Set<TEntity>()
+            return await dbContext
+                .Set<TEntity>()
                 .FirstOrDefaultAsync(e => e.Id.Equals(id), 
                     cancellationToken);
         }
@@ -29,7 +31,8 @@ namespace GarmentShop.Infrastructure.Persistance.Repositories.Common
             Expression<Func<TEntity, bool>> predicate, 
             CancellationToken cancellationToken = default)
         {
-            return await dbContext.Set<TEntity>()
+            return await dbContext
+                .Set<TEntity>()
                 .FirstOrDefaultAsync(predicate, cancellationToken);
         }
 
@@ -37,7 +40,8 @@ namespace GarmentShop.Infrastructure.Persistance.Repositories.Common
             TEntity entity, 
             CancellationToken cancellationToken = default)
         {
-            await dbContext.Set<TEntity>()
+            await dbContext
+                .Set<TEntity>()
                 .AddAsync(entity, cancellationToken);
         }
 
@@ -53,33 +57,66 @@ namespace GarmentShop.Infrastructure.Persistance.Repositories.Common
             return Task.CompletedTask;
         } 
 
-        public async Task<IEnumerable<TEntity>> GetAllAsync(
-            CancellationToken cancellationToken = default)
+        public IQueryable<TEntity> GetAll()
         {
-            return await dbContext.Set<TEntity>()
-                .ToListAsync(cancellationToken);
+            return dbContext.Set<TEntity>();
         }
 
-        public async Task<IEnumerable<TEntity>> GetWhereAsync(
+        public IQueryable<TEntity> GetAll(string include)
+        {
+            return dbContext
+                .Set<TEntity>()
+                .Include(include);
+        }
+
+        public IQueryable<TEntity> GetWhere(
             Expression<Func<TEntity, bool>> predicate,
             CancellationToken cancellationToken = default)
         {
-            return await dbContext.Set<TEntity>().Where(predicate)
-                .ToListAsync(cancellationToken);
+            return dbContext
+                .Set<TEntity>()
+                .Where(predicate);
+        }
+
+        public IQueryable<TEntity> GetAll(string include, string include2)
+        {
+            return dbContext
+                .Set<TEntity>()
+                .Include(include)
+                .Include(include2);
+        }
+
+        public IQueryable<TEntity> GetWhere(
+            Expression<Func<TEntity, bool>> predicate,
+            string include)
+        {
+            return GetWhere(predicate).Include(include);
         }
 
         public async Task<int> CountAllAsync(
             CancellationToken cancellationToken = default)
         {
-            return await dbContext.Set<TEntity>().CountAsync(cancellationToken);
+            return await dbContext
+                .Set<TEntity>()
+                .CountAsync(cancellationToken);
         }
 
         public async Task<int> CountWhereAsync(
             Expression<Func<TEntity, bool>> predicate,
             CancellationToken cancellationToken = default)
         {
-            return await dbContext.Set<TEntity>()
+            return await dbContext
+                .Set<TEntity>()
                 .CountAsync(predicate, cancellationToken);
+        }
+
+        public async Task<bool> ExistsAsync(
+            Expression<Func<TEntity, bool>> predicate,
+            CancellationToken cancellationToken = default)
+        {
+            return await dbContext
+                .Set<TEntity>()
+                .AnyAsync(predicate, cancellationToken);
         }
     }
 }

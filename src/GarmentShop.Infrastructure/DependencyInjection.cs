@@ -10,6 +10,16 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using GarmentShop.Application.Common.Interfaces.Persistance.CommonRepositories;
 using GarmentShop.Infrastructure.Persistance.Repositories.Common;
+using GarmentShop.Infrastructure.Persistance;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using GarmentShop.Infrastructure.Auth.Permissions;
+using GarmentShop.Infrastructure.Auth.Roles;
+using GarmentShop.Domain.Common.Models;
+using GarmentShop.Domain.UserAggregate;
+using GarmentShop.Domain.UserAggregate.ValueObjects;
+using GarmentShop.Infrastructure.Persistance.Repositories.UserAgg;
+using GarmentShop.Domain.UserAggregate.Entities;
 
 namespace GarmentShop.Infrastructure
 {
@@ -32,9 +42,25 @@ namespace GarmentShop.Infrastructure
             this IServiceCollection services,
             ConfigurationManager configuration)
         {
-            // conf for now
+            services.AddDbContext<GarmentShopDbContext>(options =>
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services
+                .AddScoped<IUnitOfWork, UnitOfWork>()
+                .AddCustomRepository<User, UserId, UserRepository>()
+                .AddCustomRepository<Role, RoleId, RoleRepository>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddCustomRepository<TEntity, TId, TRepository>(
+            this IServiceCollection services)
+               where TEntity : Entity<TId>
+               where TId : ValueObject
+               where TRepository : class, IGenericRepository<TEntity, TId>
+            
+        {
+            services.AddScoped<IGenericRepository<TEntity, TId>, TRepository>();
 
             return services;
         }
@@ -45,6 +71,11 @@ namespace GarmentShop.Infrastructure
         {
             var jwtSettings = new JwtSettings();
             configuration.Bind(JwtSettings.SectionName, jwtSettings);
+
+            services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
+            services.AddSingleton<IAuthorizationPolicyProvider, PermissionAuthorizationPolicyProvider>();
+            services.AddSingleton<IAuthorizationHandler, RoleAuthorizationHandler>();
+            services.AddSingleton<IAuthorizationPolicyProvider, RoleAuthorizationPolicyProvider>();
 
             services.AddSingleton(Options.Create(jwtSettings));
             services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
