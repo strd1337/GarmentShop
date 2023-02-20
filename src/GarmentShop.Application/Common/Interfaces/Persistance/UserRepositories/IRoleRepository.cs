@@ -8,7 +8,5 @@ namespace GarmentShop.Application.Common.Interfaces.Persistance.UserRepositories
         IGenericRepository<Role, RoleId>
     {
         Task AddPermissionAsync(Role role, Permission permission);
-        Task<Role?> FindByNameAsync(string name,
-            CancellationToken cancellationToken = default);
     }
 }

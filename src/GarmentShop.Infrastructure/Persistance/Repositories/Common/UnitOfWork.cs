@@ -1,49 +1,72 @@
-﻿using GarmentShop.Application.Common.Interfaces.Persistance.AuthRepositories;
-using GarmentShop.Application.Common.Interfaces.Persistance.CommonRepositories;
-using GarmentShop.Application.Common.Interfaces.Persistance.UserRepositories;
-using GarmentShop.Infrastructure.Persistance.Repositories.AuthAgg;
-using GarmentShop.Infrastructure.Persistance.Repositories.UserAgg;
+﻿using GarmentShop.Application.Common.Interfaces.Persistance.CommonRepositories;
+using GarmentShop.Domain.Common.Models;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace GarmentShop.Infrastructure.Persistance.Repositories.Common
 {
-    public sealed class UnitOfWork : IUnitOfWork
+    public class UnitOfWork : IUnitOfWork
     {
         private readonly GarmentShopDbContext dbContext;
         private bool isDisposed;
-        private IAuthenticationRepository? authenticationRepository;
-        private IUserRepository? userRepository;
-        private IRoleRepository? roleRepository;
-        private IPermissionRepository? permissionRepository;
-
-        public IAuthenticationRepository AuthenticationRepository =>
-           authenticationRepository ??= new AuthenticationRepository(dbContext);
-         
-        public IUserRepository UserRepository =>
-            userRepository ??= new UserRepository(dbContext);
-
-        public IRoleRepository RoleRepository =>
-            roleRepository ??= new RoleRepository(dbContext);
-
-        public IPermissionRepository PermissionRepository =>
-            permissionRepository ??= new PermissionRepository(dbContext);
+        private readonly Dictionary<Type, object> repositories = new(); 
 
         public UnitOfWork(GarmentShopDbContext dbContext)
         {
-            this.dbContext = dbContext;
+            this.dbContext = dbContext ?? 
+                throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public Task SaveChangesAsync(CancellationToken cancellationToken = default)
+        public IGenericRepository<TEntity, TId> GetRepository<TEntity, TId>(
+            bool hasCustomRepository = false)
+                where TEntity : Entity<TId>
+                where TId : ValueObject
         {
-            return dbContext.SaveChangesAsync(cancellationToken);
+            if (hasCustomRepository)
+            {
+                var customRepository = dbContext.GetService<IGenericRepository<TEntity, TId>>();
+                if (customRepository is not null)
+                {
+                    return customRepository;
+                }
+            }
+
+            var type = typeof(TEntity);
+            if (!repositories.ContainsKey(type))
+            {
+                repositories[type] = new GenericRepository<TEntity, TId>(dbContext);
+            }
+
+            return (IGenericRepository<TEntity, TId>)repositories[type];
+        }
+
+        public int SaveChanges()
+        {
+            return dbContext.SaveChanges();
+        }
+
+        public async Task<int> SaveChangesAsync(CancellationToken cancellationToken)
+        {
+            return await dbContext.SaveChangesAsync(cancellationToken);
         }
 
         public void Dispose()
         {
+            Dispose(true);
+
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
             if (!isDisposed)
             {
-                dbContext.Dispose();
-                isDisposed = true;
+                if (disposing)
+                {
+                    repositories?.Clear();
+                    dbContext.Dispose();
+                }
             }
+            isDisposed = true;
         }
     }
 }

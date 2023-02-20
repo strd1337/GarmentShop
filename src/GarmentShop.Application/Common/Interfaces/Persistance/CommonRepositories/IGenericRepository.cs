@@ -21,18 +21,27 @@ namespace GarmentShop.Application.Common.Interfaces.Persistance.CommonRepositori
         Task UpdateAsync(TEntity entity);
 
         Task RemoveAsync(TEntity entity);
-        
-        Task<IEnumerable<TEntity>> GetAllAsync(
-            CancellationToken cancellationToken = default);
 
-        Task<IEnumerable<TEntity>> GetWhereAsync(
+        IQueryable<TEntity> GetAll();
+        IQueryable<TEntity> GetAll(string include);
+        IQueryable<TEntity> GetAll(string include, string include2);
+
+        IQueryable<TEntity> GetWhere(
             Expression<Func<TEntity, bool>> predicate,
             CancellationToken cancellationToken = default);
-       
+
+        IQueryable<TEntity> GetWhere(
+            Expression<Func<TEntity, bool>> predicate,
+            string include);
+
         Task<int> CountAllAsync(
             CancellationToken cancellationToken = default);
 
         Task<int> CountWhereAsync(
+            Expression<Func<TEntity, bool>> predicate,
+            CancellationToken cancellationToken = default);
+
+        Task<bool> ExistsAsync(
             Expression<Func<TEntity, bool>> predicate,
             CancellationToken cancellationToken = default);
     }

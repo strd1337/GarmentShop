@@ -1,6 +1,8 @@
 ﻿using GarmentShop.Application.Common.Interfaces.Auth;
 using GarmentShop.Application.Common.Services;
 using GarmentShop.Domain.AuthenticationAggregate;
+using GarmentShop.Domain.UserAggregate;
+using GarmentShop.Domain.UserAggregate.Entities;
 using GarmentShop.Domain.UserAggregate.Enums;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -23,21 +25,34 @@ namespace GarmentShop.Infrastructure.Auth
             this.jwtSettings = jwtOptions.Value;
         }
 
-        public string GenerateToken(Authentication user) 
+        public string GenerateToken(Authentication authUser, User user) 
         {
+            var claims = new List<Claim>
+            {
+                new(JwtRegisteredClaimNames.Sub, authUser.Id.Value.ToString()),
+                new(JwtRegisteredClaimNames.UniqueName, authUser.UserName),
+                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            };
+
+            var permissions = new List<Permission>();
+            foreach (var userRole in user.Roles)
+            {
+                claims.Add(new(CustomClaims.Roles, 
+                    Enum.GetName(typeof(RoleType), userRole.Role.Type)!));
+
+                permissions.AddRange(userRole.Role.Permissions);
+            }
+
+            foreach(var permission in permissions)
+            {
+                claims.Add(new(CustomClaims.Permissions, 
+                    Enum.GetName(typeof(PermissionType), permission.Type)!));
+            }
+            
             var signingCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(
                     Encoding.UTF8.GetBytes(jwtSettings.Secret)),
                 SecurityAlgorithms.HmacSha256);
-
-            var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id.Value.ToString()),
-                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.Role, 
-                    Enum.GetName(typeof(RoleType), RoleType.Customer)!)
-            };
 
             var securityToken = new JwtSecurityToken(
                 issuer: jwtSettings.Issuer,
