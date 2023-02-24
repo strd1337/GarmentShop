@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GarmentShop.Infrastructure.Migrations
 {
     [DbContext(typeof(GarmentShopDbContext))]
-    [Migration("20230217120919_InitialCreate")]
+    [Migration("20230223130818_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace GarmentShop.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.2")
+                .HasAnnotation("ProductVersion", "7.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -119,6 +119,22 @@ namespace GarmentShop.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("OutboxMessages");
+                });
+
+            modelBuilder.Entity("GarmentShop.Domain.Common.Outbox.OutboxMessageConsumer", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OutboxMessageConsumers");
                 });
 
             modelBuilder.Entity("GarmentShop.Domain.GarmentAggregate.Garment", b =>
@@ -278,25 +294,25 @@ namespace GarmentShop.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("873299d9-e0be-4fc2-89ff-7952ae603174"),
-                            CreatedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5854),
-                            ModifiedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5860),
+                            Id = new Guid("729d3423-6250-46fe-aaee-b031e7e13ee3"),
+                            CreatedDate = new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9791),
+                            ModifiedDate = new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9798),
                             Name = "Customer",
                             Type = 0
                         },
                         new
                         {
-                            Id = new Guid("2d25cec7-d3d6-449d-a03d-70b8d0f27b92"),
-                            CreatedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5864),
-                            ModifiedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5865),
+                            Id = new Guid("ba6d0919-1e52-449a-a4b5-3d196eaf28e0"),
+                            CreatedDate = new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9802),
+                            ModifiedDate = new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9804),
                             Name = "Manager",
                             Type = 1
                         },
                         new
                         {
-                            Id = new Guid("94995d3a-f7f4-4e9c-9f25-c15a12be955f"),
-                            CreatedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5868),
-                            ModifiedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5870),
+                            Id = new Guid("274948e2-efa8-4248-9f1f-5073ae056d9d"),
+                            CreatedDate = new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9807),
+                            ModifiedDate = new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9809),
                             Name = "Admin",
                             Type = 2
                         });
@@ -502,109 +518,109 @@ namespace GarmentShop.Infrastructure.Migrations
                             b1.HasData(
                                 new
                                 {
-                                    Id = new Guid("e8363d05-f28d-4447-b022-953f8f63d7ce"),
-                                    RoleId = new Guid("873299d9-e0be-4fc2-89ff-7952ae603174"),
-                                    CreatedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5332),
-                                    ModifiedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5396),
+                                    Id = new Guid("15d1cf25-485d-4f4b-82c1-a46559de30d5"),
+                                    RoleId = new Guid("729d3423-6250-46fe-aaee-b031e7e13ee3"),
+                                    CreatedDate = new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9268),
+                                    ModifiedDate = new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9321),
                                     Name = "AddToCart",
                                     Type = 0
                                 },
                                 new
                                 {
-                                    Id = new Guid("39c92b90-1af0-496f-9de5-0fa7babcab37"),
-                                    RoleId = new Guid("873299d9-e0be-4fc2-89ff-7952ae603174"),
-                                    CreatedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5401),
-                                    ModifiedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5403),
+                                    Id = new Guid("5dec5f96-76ef-4c87-8aba-b06aed16aaef"),
+                                    RoleId = new Guid("729d3423-6250-46fe-aaee-b031e7e13ee3"),
+                                    CreatedDate = new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9326),
+                                    ModifiedDate = new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9328),
                                     Name = "PlaceOrder",
                                     Type = 1
                                 },
                                 new
                                 {
-                                    Id = new Guid("0d618911-8591-45ee-8c56-ea05820a5390"),
-                                    RoleId = new Guid("873299d9-e0be-4fc2-89ff-7952ae603174"),
-                                    CreatedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5407),
-                                    ModifiedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5409),
+                                    Id = new Guid("5faa0d50-4753-4e23-9cff-bc82deed6ceb"),
+                                    RoleId = new Guid("729d3423-6250-46fe-aaee-b031e7e13ee3"),
+                                    CreatedDate = new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9345),
+                                    ModifiedDate = new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9347),
                                     Name = "ViewOrderHistory",
                                     Type = 2
                                 },
                                 new
                                 {
-                                    Id = new Guid("3787eecc-7b14-4c66-886e-cf5a3aa14270"),
-                                    RoleId = new Guid("873299d9-e0be-4fc2-89ff-7952ae603174"),
-                                    CreatedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5413),
-                                    ModifiedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5415),
+                                    Id = new Guid("4a692ebf-3664-4f22-88c6-a0b8c46e3357"),
+                                    RoleId = new Guid("729d3423-6250-46fe-aaee-b031e7e13ee3"),
+                                    CreatedDate = new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9352),
+                                    ModifiedDate = new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9354),
                                     Name = "UpdateShippingAddress",
                                     Type = 3
                                 },
                                 new
                                 {
-                                    Id = new Guid("24661828-46b5-456b-a7e8-b40e2ce4b660"),
-                                    RoleId = new Guid("2d25cec7-d3d6-449d-a03d-70b8d0f27b92"),
-                                    CreatedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5419),
-                                    ModifiedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5421),
+                                    Id = new Guid("9ab90b85-3e3b-4042-bec2-20bbf4606fa0"),
+                                    RoleId = new Guid("ba6d0919-1e52-449a-a4b5-3d196eaf28e0"),
+                                    CreatedDate = new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9358),
+                                    ModifiedDate = new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9360),
                                     Name = "EditItems",
                                     Type = 4
                                 },
                                 new
                                 {
-                                    Id = new Guid("4fa7da2b-5364-4c63-a095-ddb805f38946"),
-                                    RoleId = new Guid("2d25cec7-d3d6-449d-a03d-70b8d0f27b92"),
-                                    CreatedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5433),
-                                    ModifiedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5434),
+                                    Id = new Guid("736ffe87-d3b5-49a0-9f2b-b12d35e69d22"),
+                                    RoleId = new Guid("ba6d0919-1e52-449a-a4b5-3d196eaf28e0"),
+                                    CreatedDate = new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9364),
+                                    ModifiedDate = new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9366),
                                     Name = "DeleteItems",
                                     Type = 5
                                 },
                                 new
                                 {
-                                    Id = new Guid("53543dc3-b5a6-41f1-83ac-90e4e54778c9"),
-                                    RoleId = new Guid("2d25cec7-d3d6-449d-a03d-70b8d0f27b92"),
-                                    CreatedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5439),
-                                    ModifiedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5440),
+                                    Id = new Guid("7d7b3a00-df3f-4ad7-8603-d22ba079b9c9"),
+                                    RoleId = new Guid("ba6d0919-1e52-449a-a4b5-3d196eaf28e0"),
+                                    CreatedDate = new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9370),
+                                    ModifiedDate = new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9372),
                                     Name = "AddItems",
                                     Type = 6
                                 },
                                 new
                                 {
-                                    Id = new Guid("22668925-fad1-4bd2-8fce-5152157b8b06"),
-                                    RoleId = new Guid("94995d3a-f7f4-4e9c-9f25-c15a12be955f"),
-                                    CreatedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5444),
-                                    ModifiedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5446),
+                                    Id = new Guid("a98a8e44-4528-48c1-9578-2bcec0561432"),
+                                    RoleId = new Guid("274948e2-efa8-4248-9f1f-5073ae056d9d"),
+                                    CreatedDate = new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9376),
+                                    ModifiedDate = new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9378),
                                     Name = "ManageCustomers",
                                     Type = 7
                                 },
                                 new
                                 {
-                                    Id = new Guid("ae370106-f7ff-4c78-9b7c-e691a4385913"),
-                                    RoleId = new Guid("94995d3a-f7f4-4e9c-9f25-c15a12be955f"),
-                                    CreatedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5450),
-                                    ModifiedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5452),
+                                    Id = new Guid("04797320-c4b7-41e7-b6fb-2479c16b6cfb"),
+                                    RoleId = new Guid("274948e2-efa8-4248-9f1f-5073ae056d9d"),
+                                    CreatedDate = new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9383),
+                                    ModifiedDate = new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9384),
                                     Name = "ManageUsers",
                                     Type = 8
                                 },
                                 new
                                 {
-                                    Id = new Guid("a95eae0f-c7f4-408d-8010-b3d031bd837f"),
-                                    RoleId = new Guid("94995d3a-f7f4-4e9c-9f25-c15a12be955f"),
-                                    CreatedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5456),
-                                    ModifiedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5458),
+                                    Id = new Guid("ed1764cf-dd7f-49d9-aeed-8e24e73129a7"),
+                                    RoleId = new Guid("274948e2-efa8-4248-9f1f-5073ae056d9d"),
+                                    CreatedDate = new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9389),
+                                    ModifiedDate = new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9391),
                                     Name = "ManageRoles",
                                     Type = 9
                                 },
                                 new
                                 {
-                                    Id = new Guid("9925f28f-4606-4cef-9117-19693fa49c5c"),
-                                    RoleId = new Guid("94995d3a-f7f4-4e9c-9f25-c15a12be955f"),
-                                    CreatedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5462),
-                                    ModifiedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5463),
+                                    Id = new Guid("80bc6902-e761-48c6-8e86-38bfbc3650f7"),
+                                    RoleId = new Guid("274948e2-efa8-4248-9f1f-5073ae056d9d"),
+                                    CreatedDate = new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9399),
+                                    ModifiedDate = new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9401),
                                     Name = "ManagePermissions",
                                     Type = 10
                                 },
                                 new
                                 {
-                                    Id = new Guid("5f5c9eeb-b41d-4e67-a34b-4c0bf93ec9a0"),
-                                    RoleId = new Guid("94995d3a-f7f4-4e9c-9f25-c15a12be955f"),
-                                    CreatedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5467),
-                                    ModifiedDate = new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5469),
+                                    Id = new Guid("0c873692-42d0-4379-b428-d6b6f1104fe4"),
+                                    RoleId = new Guid("274948e2-efa8-4248-9f1f-5073ae056d9d"),
+                                    CreatedDate = new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9406),
+                                    ModifiedDate = new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9408),
                                     Name = "ManageOrders",
                                     Type = 11
                                 });

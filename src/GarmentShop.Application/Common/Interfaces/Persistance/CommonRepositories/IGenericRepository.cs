@@ -5,7 +5,7 @@ namespace GarmentShop.Application.Common.Interfaces.Persistance.CommonRepositori
 {
     public interface IGenericRepository<TEntity, TId> 
         where TEntity : Entity<TId>
-        where TId : notnull
+        where TId : ValueObject
     {
         Task<TEntity?> GetByIdAsync(
             TId id, 
@@ -27,8 +27,7 @@ namespace GarmentShop.Application.Common.Interfaces.Persistance.CommonRepositori
         IQueryable<TEntity> GetAll(string include, string include2);
 
         IQueryable<TEntity> GetWhere(
-            Expression<Func<TEntity, bool>> predicate,
-            CancellationToken cancellationToken = default);
+            Expression<Func<TEntity, bool>> predicate);
 
         IQueryable<TEntity> GetWhere(
             Expression<Func<TEntity, bool>> predicate,
