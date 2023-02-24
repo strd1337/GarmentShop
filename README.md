@@ -1,5 +1,5 @@
 # GarmentShop
-This is the skeleton of the future garment management system designed by using Clean Architecture, Domain Driven Design, ASP.NET Core 7, T-SQL, EF Core 7, domain events, Fluent validation, Fluent API, logging, JWT Bearer, generic repository, CQRS, unit of work, outbox message patterns, mediatR, mapper, Polly, Quartz, custom role and permission attribute system.
+This is the skeleton of the future garment management system designed by using Clean Architecture, Domain Driven Design, ASP.NET Core 7, T-SQL, EF Core 7, domain events, Fluent validation, Fluent API, logging, JWT Bearer, generic repository, CQRS, unit of work, outbox message patterns, mediatR, mapper, polly, quartz, custom role and permission attribute system.
 
 There are aggregates:
 1) User Aggregate:
