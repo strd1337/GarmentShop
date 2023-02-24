@@ -20,6 +20,10 @@ using GarmentShop.Domain.UserAggregate;
 using GarmentShop.Domain.UserAggregate.ValueObjects;
 using GarmentShop.Infrastructure.Persistance.Repositories.UserAgg;
 using GarmentShop.Domain.UserAggregate.Entities;
+using Quartz;
+using GarmentShop.Infrastructure.BackgroundJobs;
+using MediatR;
+using GarmentShop.Infrastructure.Idempotence;
 
 namespace GarmentShop.Infrastructure
 {
@@ -31,20 +35,58 @@ namespace GarmentShop.Infrastructure
         {
             services
                 .AddAuth(configuration)
-                .AddPersistance(configuration);
+                .AddDbContext(configuration)
+                .AddQuartz()
+                .AddPersistance();
 
             services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+
+            services.Decorate(
+                typeof(INotificationHandler<>), 
+                typeof(IdempotentDomainEventHandler<>));
+
+            return services;
+        }
+
+        public static IServiceCollection AddDbContext(
+           this IServiceCollection services,
+           ConfigurationManager configuration)
+        {
+            services.AddDbContext<GarmentShopDbContext>((sp, options) =>
+            {
+                options.UseSqlServer(
+                    configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            return services;
+        }
+        
+        public static IServiceCollection AddQuartz(
+            this IServiceCollection services)
+        {
+            services.AddQuartz(configure =>
+            {
+                var jobKey = new JobKey(nameof(ProcessOutboxMessageesJob));
+
+                configure
+                    .AddJob<ProcessOutboxMessageesJob>(jobKey)
+                    .AddTrigger(trigger =>
+                        trigger.ForJob(jobKey)
+                            .WithSimpleSchedule(schedule =>
+                                schedule.WithIntervalInSeconds(10)
+                                    .RepeatForever()));
+
+                configure.UseMicrosoftDependencyInjectionJobFactory();
+            });
+
+            services.AddQuartzHostedService();
 
             return services;
         }
 
         public static IServiceCollection AddPersistance( 
-            this IServiceCollection services,
-            ConfigurationManager configuration)
+            this IServiceCollection services)
         {
-            services.AddDbContext<GarmentShopDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
-
             services
                 .AddScoped<IUnitOfWork, UnitOfWork>()
                 .AddCustomRepository<User, UserId, UserRepository>()

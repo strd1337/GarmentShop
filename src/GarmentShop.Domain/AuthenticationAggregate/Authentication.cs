@@ -1,6 +1,6 @@
 ﻿using GarmentShop.Domain.AuthenticationAggregate.ValueObjects;
 using GarmentShop.Domain.Common.Models;
-using GarmentShop.Domain.Events;
+using GarmentShop.Domain.Events.Auth;
 using GarmentShop.Domain.UserAggregate.ValueObjects;
 
 namespace GarmentShop.Domain.AuthenticationAggregate
@@ -45,8 +45,9 @@ namespace GarmentShop.Domain.AuthenticationAggregate
 
             registeredUser.RaiseDomainEvent(
                 new UserRegisteredEvent(
-                    registeredUser.Id, 
-                    registeredUser.UserId));
+                    Guid.NewGuid(),
+                    registeredUser.Id.Value, 
+                    registeredUser.UserId.Value));
 
             return registeredUser;
         }

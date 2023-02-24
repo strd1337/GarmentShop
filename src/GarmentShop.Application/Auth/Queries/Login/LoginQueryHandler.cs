@@ -9,6 +9,7 @@ using GarmentShop.Domain.AuthenticationAggregate;
 using GarmentShop.Domain.UserAggregate.ValueObjects;
 using GarmentShop.Domain.UserAggregate;
 using GarmentShop.Application.Common.Interfaces.Persistance.UserRepositories;
+using GarmentShop.Domain.Events.Auth;
 
 namespace GarmentShop.Application.Auth.Queries.Login
 {
@@ -49,6 +50,13 @@ namespace GarmentShop.Application.Auth.Queries.Login
                 .FindByIdAsync(authUser.UserId, cancellationToken);
 
             var token = jwtTokenGenerator.GenerateToken(authUser, user!);
+
+            authUser.RaiseDomainEvent(new UserLoggedInEvent(      
+                Guid.NewGuid(),
+                authUser.Id.Value,
+                authUser.UserId.Value));
+
+            await unitOfWork.SaveChangesAsync(cancellationToken);
 
             return new AuthenticationResult(
                 authUser,

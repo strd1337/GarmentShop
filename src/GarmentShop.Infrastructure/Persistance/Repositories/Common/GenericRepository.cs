@@ -8,7 +8,7 @@ namespace GarmentShop.Infrastructure.Persistance.Repositories.Common
     public class GenericRepository<TEntity, TId> 
         : IGenericRepository<TEntity, TId>
             where TEntity : Entity<TId>
-            where TId : notnull
+            where TId : ValueObject
     {
         protected GarmentShopDbContext dbContext;
 
@@ -35,7 +35,7 @@ namespace GarmentShop.Infrastructure.Persistance.Repositories.Common
                 .Set<TEntity>()
                 .FirstOrDefaultAsync(predicate, cancellationToken);
         }
-
+        
         public async Task AddAsync(
             TEntity entity, 
             CancellationToken cancellationToken = default)
@@ -70,12 +70,18 @@ namespace GarmentShop.Infrastructure.Persistance.Repositories.Common
         }
 
         public IQueryable<TEntity> GetWhere(
-            Expression<Func<TEntity, bool>> predicate,
-            CancellationToken cancellationToken = default)
+            Expression<Func<TEntity, bool>> predicate)
         {
             return dbContext
                 .Set<TEntity>()
                 .Where(predicate);
+        }
+
+        public IQueryable<TEntity> GetWhere(
+            Expression<Func<TEntity, bool>> predicate,
+            string include)
+        {
+            return GetWhere(predicate).Include(include);
         }
 
         public IQueryable<TEntity> GetAll(string include, string include2)
@@ -84,13 +90,6 @@ namespace GarmentShop.Infrastructure.Persistance.Repositories.Common
                 .Set<TEntity>()
                 .Include(include)
                 .Include(include2);
-        }
-
-        public IQueryable<TEntity> GetWhere(
-            Expression<Func<TEntity, bool>> predicate,
-            string include)
-        {
-            return GetWhere(predicate).Include(include);
         }
 
         public async Task<int> CountAllAsync(

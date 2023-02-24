@@ -13,6 +13,10 @@ namespace GarmentShop.Application
             services.AddMediatR(typeof(DependencyInjection).Assembly);
 
             services.AddScoped(
+                typeof(IPipelineBehavior<,>),
+                typeof(LoggingBehavior<,>));
+
+            services.AddScoped(
                 typeof(IPipelineBehavior<,>), 
                 typeof(ValidationBehavior<,>));
 

@@ -8,16 +8,16 @@ using Microsoft.Extensions.Logging;
 
 namespace GarmentShop.Application.Auth.Events
 {
-    public sealed class UserRegisteredEventHandler
-        : IDomainEventHandler<UserRegisteredEvent>
+    public sealed class UserLoggedInEventHandler
+        : IDomainEventHandler<UserLoggedInEvent>
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly ILogger<UserRegisteredEventHandler> logger;
         private readonly IDateTimeProvider dateTimeProvider;
 
-        public UserRegisteredEventHandler(
-            IUnitOfWork unitOfWork,
-            ILogger<UserRegisteredEventHandler> logger,
+        public UserLoggedInEventHandler(
+            IUnitOfWork unitOfWork, 
+            ILogger<UserRegisteredEventHandler> logger, 
             IDateTimeProvider dateTimeProvider)
         {
             this.unitOfWork = unitOfWork;
@@ -26,32 +26,28 @@ namespace GarmentShop.Application.Auth.Events
         }
 
         public async Task Handle(
-            UserRegisteredEvent notification,
+            UserLoggedInEvent notification, 
             CancellationToken cancellationToken)
         {
-            var registeredUser = await unitOfWork
+            var loggingInUser = await unitOfWork
                .GetRepository<Authentication, AuthenticationId>()
-               .FirstOrDefaultAsync(
-                    x => x.Id.Value == notification.AuthId,
-                    cancellationToken);
+               .GetByIdAsync(AuthenticationId.Create(notification.AuthId),
+                    cancellationToken);   
 
-            if (registeredUser is null)
+            if (loggingInUser is null)
             {
                 logger.LogInformation(
-                    "Registered user is not found in database " +
-                    "during registration. {@DateTimeUtc}",
+                    "User is not found in database during logging in. {@DateTimeUtc}",
                     dateTimeProvider.UtcNow);
 
                 return;
             }
 
             logger.LogInformation(
-                "User registered AuthId: {@AuthId}, " +
+                "User logged in AuthId: {@AuthId}, " +
                 "UserId: {@UserId}, Date: {@DateTimeUtc}",
-                registeredUser.Id.Value, registeredUser.UserId.Value, 
+                loggingInUser.Id.Value, loggingInUser.UserId.Value, 
                 dateTimeProvider.UtcNow);
-
-            return;
         }
     }
 }

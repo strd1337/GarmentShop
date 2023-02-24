@@ -37,5 +37,6 @@ namespace GarmentShop.Infrastructure.Persistance
         public DbSet<GarmentType> GarmentTypes { get; set; } = null!;
         public DbSet<Sale> Sales { get; set; } = null!;
         public DbSet<OutboxMessage> OutboxMessages { get; set; } = null!;
+        public DbSet<OutboxMessageConsumer> OutboxMessageConsumers { get; set; } = null!;
     }
 }

@@ -14,7 +14,7 @@ namespace GarmentShop.Domain.AuthenticationAggregate.ValueObjects
         public static AuthenticationId CreateUnique() => new(Guid.NewGuid());
 
         public static AuthenticationId Create(Guid value) 
-            => new AuthenticationId(value);
+            => new(value);
 
         public override IEnumerable<object> GetEqualityComponents()
         {

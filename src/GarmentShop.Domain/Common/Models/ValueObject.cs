@@ -1,4 +1,6 @@
-﻿namespace GarmentShop.Domain.Common.Models
+﻿using GarmentShop.Domain.AuthenticationAggregate.ValueObjects;
+
+namespace GarmentShop.Domain.Common.Models
 {
     public abstract class ValueObject : IEquatable<ValueObject>
     {

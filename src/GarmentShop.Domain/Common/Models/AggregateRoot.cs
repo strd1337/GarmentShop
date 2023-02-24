@@ -11,7 +11,7 @@ namespace GarmentShop.Domain.Common.Models
         {
         }
 
-        protected void RaiseDomainEvent(IDomainEvent @event)
+        public void RaiseDomainEvent(IDomainEvent @event)
         {
             domainEvents.Add(@event);
         }

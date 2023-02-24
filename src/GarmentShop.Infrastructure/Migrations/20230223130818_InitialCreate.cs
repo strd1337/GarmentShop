@@ -82,6 +82,18 @@ namespace GarmentShop.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "OutboxMessageConsumers",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OutboxMessageConsumers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OutboxMessages",
                 columns: table => new
                 {
@@ -193,8 +205,8 @@ namespace GarmentShop.Infrastructure.Migrations
                     SaleOrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     SaleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Method = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PaymentDate = table.Column<DateTime>(name: "Payment_Date", type: "datetime2", nullable: false),
-                    PaymentAmount = table.Column<decimal>(name: "Payment_Amount", type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
+                    Payment_Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Payment_Amount = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
                     TotalCost = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
                     Tax = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
                     ShippingAndHandling = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
@@ -289,9 +301,9 @@ namespace GarmentShop.Infrastructure.Migrations
                 columns: new[] { "Id", "CreatedDate", "ModifiedDate", "Name", "Type" },
                 values: new object[,]
                 {
-                    { new Guid("2d25cec7-d3d6-449d-a03d-70b8d0f27b92"), new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5864), new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5865), "Manager", 1 },
-                    { new Guid("873299d9-e0be-4fc2-89ff-7952ae603174"), new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5854), new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5860), "Customer", 0 },
-                    { new Guid("94995d3a-f7f4-4e9c-9f25-c15a12be955f"), new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5868), new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5870), "Admin", 2 }
+                    { new Guid("274948e2-efa8-4248-9f1f-5073ae056d9d"), new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9807), new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9809), "Admin", 2 },
+                    { new Guid("729d3423-6250-46fe-aaee-b031e7e13ee3"), new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9791), new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9798), "Customer", 0 },
+                    { new Guid("ba6d0919-1e52-449a-a4b5-3d196eaf28e0"), new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9802), new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9804), "Manager", 1 }
                 });
 
             migrationBuilder.InsertData(
@@ -299,18 +311,18 @@ namespace GarmentShop.Infrastructure.Migrations
                 columns: new[] { "PermissionId", "RoleId", "CreatedDate", "ModifiedDate", "Name", "Type" },
                 values: new object[,]
                 {
-                    { new Guid("0d618911-8591-45ee-8c56-ea05820a5390"), new Guid("873299d9-e0be-4fc2-89ff-7952ae603174"), new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5407), new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5409), "ViewOrderHistory", 2 },
-                    { new Guid("22668925-fad1-4bd2-8fce-5152157b8b06"), new Guid("94995d3a-f7f4-4e9c-9f25-c15a12be955f"), new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5444), new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5446), "ManageCustomers", 7 },
-                    { new Guid("24661828-46b5-456b-a7e8-b40e2ce4b660"), new Guid("2d25cec7-d3d6-449d-a03d-70b8d0f27b92"), new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5419), new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5421), "EditItems", 4 },
-                    { new Guid("3787eecc-7b14-4c66-886e-cf5a3aa14270"), new Guid("873299d9-e0be-4fc2-89ff-7952ae603174"), new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5413), new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5415), "UpdateShippingAddress", 3 },
-                    { new Guid("39c92b90-1af0-496f-9de5-0fa7babcab37"), new Guid("873299d9-e0be-4fc2-89ff-7952ae603174"), new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5401), new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5403), "PlaceOrder", 1 },
-                    { new Guid("4fa7da2b-5364-4c63-a095-ddb805f38946"), new Guid("2d25cec7-d3d6-449d-a03d-70b8d0f27b92"), new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5433), new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5434), "DeleteItems", 5 },
-                    { new Guid("53543dc3-b5a6-41f1-83ac-90e4e54778c9"), new Guid("2d25cec7-d3d6-449d-a03d-70b8d0f27b92"), new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5439), new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5440), "AddItems", 6 },
-                    { new Guid("5f5c9eeb-b41d-4e67-a34b-4c0bf93ec9a0"), new Guid("94995d3a-f7f4-4e9c-9f25-c15a12be955f"), new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5467), new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5469), "ManageOrders", 11 },
-                    { new Guid("9925f28f-4606-4cef-9117-19693fa49c5c"), new Guid("94995d3a-f7f4-4e9c-9f25-c15a12be955f"), new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5462), new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5463), "ManagePermissions", 10 },
-                    { new Guid("a95eae0f-c7f4-408d-8010-b3d031bd837f"), new Guid("94995d3a-f7f4-4e9c-9f25-c15a12be955f"), new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5456), new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5458), "ManageRoles", 9 },
-                    { new Guid("ae370106-f7ff-4c78-9b7c-e691a4385913"), new Guid("94995d3a-f7f4-4e9c-9f25-c15a12be955f"), new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5450), new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5452), "ManageUsers", 8 },
-                    { new Guid("e8363d05-f28d-4447-b022-953f8f63d7ce"), new Guid("873299d9-e0be-4fc2-89ff-7952ae603174"), new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5332), new DateTime(2023, 2, 17, 14, 9, 19, 432, DateTimeKind.Local).AddTicks(5396), "AddToCart", 0 }
+                    { new Guid("04797320-c4b7-41e7-b6fb-2479c16b6cfb"), new Guid("274948e2-efa8-4248-9f1f-5073ae056d9d"), new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9383), new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9384), "ManageUsers", 8 },
+                    { new Guid("0c873692-42d0-4379-b428-d6b6f1104fe4"), new Guid("274948e2-efa8-4248-9f1f-5073ae056d9d"), new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9406), new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9408), "ManageOrders", 11 },
+                    { new Guid("15d1cf25-485d-4f4b-82c1-a46559de30d5"), new Guid("729d3423-6250-46fe-aaee-b031e7e13ee3"), new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9268), new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9321), "AddToCart", 0 },
+                    { new Guid("4a692ebf-3664-4f22-88c6-a0b8c46e3357"), new Guid("729d3423-6250-46fe-aaee-b031e7e13ee3"), new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9352), new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9354), "UpdateShippingAddress", 3 },
+                    { new Guid("5dec5f96-76ef-4c87-8aba-b06aed16aaef"), new Guid("729d3423-6250-46fe-aaee-b031e7e13ee3"), new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9326), new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9328), "PlaceOrder", 1 },
+                    { new Guid("5faa0d50-4753-4e23-9cff-bc82deed6ceb"), new Guid("729d3423-6250-46fe-aaee-b031e7e13ee3"), new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9345), new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9347), "ViewOrderHistory", 2 },
+                    { new Guid("736ffe87-d3b5-49a0-9f2b-b12d35e69d22"), new Guid("ba6d0919-1e52-449a-a4b5-3d196eaf28e0"), new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9364), new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9366), "DeleteItems", 5 },
+                    { new Guid("7d7b3a00-df3f-4ad7-8603-d22ba079b9c9"), new Guid("ba6d0919-1e52-449a-a4b5-3d196eaf28e0"), new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9370), new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9372), "AddItems", 6 },
+                    { new Guid("80bc6902-e761-48c6-8e86-38bfbc3650f7"), new Guid("274948e2-efa8-4248-9f1f-5073ae056d9d"), new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9399), new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9401), "ManagePermissions", 10 },
+                    { new Guid("9ab90b85-3e3b-4042-bec2-20bbf4606fa0"), new Guid("ba6d0919-1e52-449a-a4b5-3d196eaf28e0"), new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9358), new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9360), "EditItems", 4 },
+                    { new Guid("a98a8e44-4528-48c1-9578-2bcec0561432"), new Guid("274948e2-efa8-4248-9f1f-5073ae056d9d"), new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9376), new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9378), "ManageCustomers", 7 },
+                    { new Guid("ed1764cf-dd7f-49d9-aeed-8e24e73129a7"), new Guid("274948e2-efa8-4248-9f1f-5073ae056d9d"), new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9389), new DateTime(2023, 2, 23, 15, 8, 18, 745, DateTimeKind.Local).AddTicks(9391), "ManageRoles", 9 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -361,6 +373,9 @@ namespace GarmentShop.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "OrderItems");
+
+            migrationBuilder.DropTable(
+                name: "OutboxMessageConsumers");
 
             migrationBuilder.DropTable(
                 name: "OutboxMessages");
