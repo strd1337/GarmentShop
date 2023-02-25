@@ -31,7 +31,8 @@ namespace GarmentShop.Application.Auth.Events
         {
             var loggingInUser = await unitOfWork
                .GetRepository<Authentication, AuthenticationId>()
-               .GetByIdAsync(AuthenticationId.Create(notification.AuthId),
+               .GetByIdAsync(
+                    AuthenticationId.Create(notification.AuthId),
                     cancellationToken);   
 
             if (loggingInUser is null)

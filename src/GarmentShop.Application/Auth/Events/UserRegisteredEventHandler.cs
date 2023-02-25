@@ -31,8 +31,8 @@ namespace GarmentShop.Application.Auth.Events
         {
             var registeredUser = await unitOfWork
                .GetRepository<Authentication, AuthenticationId>()
-               .FirstOrDefaultAsync(
-                    x => x.Id.Value == notification.AuthId,
+               .GetByIdAsync(
+                    AuthenticationId.Create(notification.AuthId),
                     cancellationToken);
 
             if (registeredUser is null)
