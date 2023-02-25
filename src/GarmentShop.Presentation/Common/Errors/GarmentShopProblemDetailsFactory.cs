@@ -8,13 +8,16 @@ using System.Diagnostics;
 
 namespace GarmentShop.Presentation.Common.Errors
 {
-    public class GarmentShopProblemDetailsFactory : ProblemDetailsFactory
+    public class GarmentShopProblemDetailsFactory 
+        : ProblemDetailsFactory
     {
         private readonly ApiBehaviorOptions options;
 
-        public GarmentShopProblemDetailsFactory(IOptions<ApiBehaviorOptions> options)
+        public GarmentShopProblemDetailsFactory(
+            IOptions<ApiBehaviorOptions> options)
         {
-            this.options = options?.Value ?? throw new ArgumentNullException(nameof(options));
+            this.options = options?.Value 
+                ?? throw new ArgumentNullException(nameof(options));
         }
 
         public override ProblemDetails CreateProblemDetails(
@@ -36,7 +39,10 @@ namespace GarmentShop.Presentation.Common.Errors
                 Instance = instance
             };
 
-            ApplyProblemDetailsDefaults(httpContext, problemDetails, statusCode.Value);
+            ApplyProblemDetailsDefaults(
+                httpContext, 
+                problemDetails, 
+                statusCode.Value);
 
             return problemDetails;
         }
@@ -70,7 +76,10 @@ namespace GarmentShop.Presentation.Common.Errors
                 problemDetails.Title = title;
             }
 
-            ApplyProblemDetailsDefaults(httpContext, problemDetails, statusCode.Value);
+            ApplyProblemDetailsDefaults(
+                httpContext, 
+                problemDetails, 
+                statusCode.Value);
 
             return problemDetails;
         }
@@ -82,23 +91,31 @@ namespace GarmentShop.Presentation.Common.Errors
         {
             problemDetails.Status ??= statusCode;
 
-            if (options.ClientErrorMapping.TryGetValue(statusCode, out var clientErrorData))
+            if (options.ClientErrorMapping.TryGetValue(
+                statusCode, 
+                out var clientErrorData))
             {
                 problemDetails.Title ??= clientErrorData.Title;
                 problemDetails.Type ??= clientErrorData.Link;
             }
 
-            var traceId = Activity.Current?.Id ?? httpContext?.TraceIdentifier;
+            var traceId = Activity.Current?.Id 
+                ?? httpContext?.TraceIdentifier;
+
             if (traceId is not null)
             {
-                problemDetails.Extensions[HttpContextItemKeys.Errors] = traceId;
+                problemDetails
+                    .Extensions[HttpContextItemKeys.Errors] = traceId;
             }
 
-            var errors = httpContext?.Items[HttpContextItemKeys.Errors] as List<Error>;
+            var errors = httpContext?.Items[HttpContextItemKeys.Errors] 
+                as List<Error>;
 
             if (errors is not null)
             {
-                problemDetails.Extensions.Add("errorCodes", errors.Select(e => e.Code));
+                problemDetails.Extensions.Add(
+                    "errorCodes", 
+                    errors.Select(e => e.Code));
             }
         }
     }

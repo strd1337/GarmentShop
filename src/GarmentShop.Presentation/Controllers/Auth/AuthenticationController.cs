@@ -15,7 +15,9 @@ namespace GarmentShop.Presentation.Controllers.Auth
         private readonly IMediator mediator;
         private readonly IMapper mapper;
 
-        public AuthenticationController(IMediator mediator, IMapper mapper)
+        public AuthenticationController(
+            IMediator mediator, 
+            IMapper mapper)
         {
             this.mediator = mediator;
             this.mapper = mapper;
@@ -28,7 +30,8 @@ namespace GarmentShop.Presentation.Controllers.Auth
         {
             var command = mapper.Map<RegisterCommand>(request);
 
-            var authResult = await mediator.Send(command, cancellationToken);
+            var authResult = await mediator
+                .Send(command, cancellationToken);
 
             return authResult.Match(
                 authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),

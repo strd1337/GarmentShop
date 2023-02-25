@@ -20,10 +20,12 @@ namespace GarmentShop.Infrastructure.Persistance.Repositories.UserAgg
             UserId id, 
             CancellationToken cancellationToken = default)
         {
-             return await dbContext.Users
-                 .Include(u => u.Roles)
-                 .ThenInclude(u => u.Role)
-                 .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
+            return await dbContext.Users
+                .Include(u => u.Roles)
+                    .ThenInclude(u => u.Role)
+                        .ThenInclude(r => r.Permissions)
+                .AsSplitQuery()
+                .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
         }
 
         public Task AddRoleAsync(User user, Role role)

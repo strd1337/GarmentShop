@@ -1,6 +1,7 @@
 using GarmentShop.Application;
 using GarmentShop.Infrastructure;
 using GarmentShop.Presentation;
+using Microsoft.AspNetCore.Diagnostics;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +25,18 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseSerilogRequestLogging();
+
+app.UseExceptionHandler("/error");
+
+app.Map("/error", (HttpContext httpContext) =>
+{
+    Exception? exception = httpContext.Features
+               .Get<IExceptionHandlerFeature>()?.Error;
+
+    return Results.Problem(
+        title: exception?.Message,
+        statusCode: StatusCodes.Status400BadRequest);
+});
 
 app.UseHttpsRedirection();
 
