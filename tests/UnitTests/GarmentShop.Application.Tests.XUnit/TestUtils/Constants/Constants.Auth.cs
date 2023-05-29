@@ -6,6 +6,7 @@
         {
             public const string Email = "string@mail.ru";
             public const string Password = "stringS1";
+            public const string InvalidPassword = "InvalidPassword";
             public const string UserName = "string";
             public const string FirstName = "First Name";
             public const string LastName = "Last Name";

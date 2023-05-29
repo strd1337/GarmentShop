@@ -12,6 +12,7 @@ using GarmentShop.Domain.Events.Auth;
 using GarmentShop.Domain.UserAggregate;
 using GarmentShop.Domain.UserAggregate.ValueObjects;
 using Moq;
+using GarmentShop.Domain.Common.Errors;
 using System.Linq.Expressions;
 
 namespace GarmentShop.Application.Tests.XUnit.Auth.Queries.Login
@@ -39,25 +40,24 @@ namespace GarmentShop.Application.Tests.XUnit.Auth.Queries.Login
         }
 
         [Fact]
-        public async Task HandleLoginQuery_ValidCredentials_ReturnsAuthenticationResult() 
+        public async Task HandleLoginQuery_ValidCredentials_ReturnsAuthenticationResult()
         {
             // Arrange
             var loginQuery = LoginQueryUtils.LoginQuery();
             var user = AuthUtils.CreateUser();
-            var authUser = AuthUtils.CreateAuthUser(user);
+            var authUser = AuthUtils.CreateAuthUserWithValidPassword(user);
             var jwtToken = AuthUtils.GenerateJwtToken();
 
-            // Act
             unitOfWorkMock
-                .Setup(x => 
+                .Setup(x =>
                     x.GetRepository<Authentication, AuthenticationId>(false))
                 .Returns(authRepositoryMock.Object);
 
             authRepositoryMock
-                .Setup(x => 
+                .Setup(x =>
                     x.FirstOrDefaultAsync(
                         It.IsAny<Expression<Func<Authentication,
-                        bool>>>(), 
+                        bool>>>(),
                         It.IsAny<CancellationToken>()))
                 .ReturnsAsync(authUser);
 
@@ -65,9 +65,9 @@ namespace GarmentShop.Application.Tests.XUnit.Auth.Queries.Login
                 .Returns(userRepositoryMock.Object);
 
             userRepositoryMock
-                .Setup(x => 
+                .Setup(x =>
                     x.FindByIdAsync(
-                        authUser.UserId, 
+                        authUser.UserId,
                         It.IsAny<CancellationToken>()))
                 .ReturnsAsync(user);
 
@@ -75,6 +75,7 @@ namespace GarmentShop.Application.Tests.XUnit.Auth.Queries.Login
                 .Setup(x => x.GenerateToken(authUser, user))
                 .Returns(jwtToken);
 
+            // Act
             var result = await handler.Handle(loginQuery, CancellationToken.None);
 
             // Assert
@@ -83,6 +84,67 @@ namespace GarmentShop.Application.Tests.XUnit.Auth.Queries.Login
 
             authUser.GetDomainEvents().Should().ContainSingle(e => e is UserLoggedInEvent);
             unitOfWorkMock.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Once);
+        }
+
+        [Fact]
+        public async Task HandleLoginQuery_InvalidPassword_ReturnsInvalidCredentialsError()
+        {
+            // Arrange
+            var loginQuery = LoginQueryUtils.LoginQuery();
+            var user = AuthUtils.CreateUser();
+            var authUser = AuthUtils.CreateAuthUserWithInvalidPassword(user);
+
+            unitOfWorkMock
+                .Setup(x =>
+                    x.GetRepository<Authentication, AuthenticationId>(false))
+                .Returns(authRepositoryMock.Object);
+
+            authRepositoryMock
+                .Setup(x =>
+                    x.FirstOrDefaultAsync(
+                        It.IsAny<Expression<Func<Authentication,
+                        bool>>>(),
+                        It.IsAny<CancellationToken>()))
+                .ReturnsAsync(authUser);
+
+            // Act
+            var result = await handler.Handle(loginQuery, CancellationToken.None);
+
+            // Assert
+            result.IsError.Should().BeTrue();
+            result.Errors.FirstOrDefault().Should().Be(Errors.Authentication.InvalidCredentials);
+
+            unitOfWorkMock.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Never);
+        }
+
+        [Fact]
+        public async Task HandleLoginQuery_AuthUserIsNull_ReturnsInvalidCredentialsError()
+        {
+            // Arrange
+            var loginQuery = LoginQueryUtils.LoginQuery();
+            Authentication? authUser = null;
+
+            unitOfWorkMock
+                .Setup(x =>
+                    x.GetRepository<Authentication, AuthenticationId>(false))
+                .Returns(authRepositoryMock.Object);
+
+            authRepositoryMock
+                .Setup(x =>
+                    x.FirstOrDefaultAsync(
+                        It.IsAny<Expression<Func<Authentication,
+                        bool>>>(),
+                        It.IsAny<CancellationToken>()))
+                .ReturnsAsync(authUser);
+
+            // Act
+            var result = await handler.Handle(loginQuery, CancellationToken.None);
+
+            // Assert
+            result.IsError.Should().BeTrue();
+            result.Errors.FirstOrDefault().Should().Be(Errors.Authentication.InvalidCredentials);
+
+            unitOfWorkMock.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Never);
         }
     }
 }

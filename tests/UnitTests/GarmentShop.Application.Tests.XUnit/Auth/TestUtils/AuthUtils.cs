@@ -7,7 +7,7 @@ namespace GarmentShop.Application.Tests.XUnit.Auth.TestUtils
 {
     public static class AuthUtils
     {
-        public static Authentication CreateAuthUser(User user)
+        public static Authentication CreateAuthUserWithValidPassword(User user)
         {
             string salt = BCrypt.Net.BCrypt.GenerateSalt();
 
@@ -15,6 +15,19 @@ namespace GarmentShop.Application.Tests.XUnit.Auth.TestUtils
                 Constants.Auth.UserName,
                 Constants.Auth.Email,
                 BCrypt.Net.BCrypt.HashPassword(Constants.Auth.Password, salt),
+                salt,
+                user.Id
+            );
+        }
+
+        public static Authentication CreateAuthUserWithInvalidPassword(User user)
+        {
+            string salt = BCrypt.Net.BCrypt.GenerateSalt();
+
+            return Authentication.Create(
+                Constants.Auth.UserName,
+                Constants.Auth.Email,
+                BCrypt.Net.BCrypt.HashPassword(Constants.Auth.InvalidPassword, salt),
                 salt,
                 user.Id
             );
