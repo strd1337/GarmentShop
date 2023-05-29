@@ -14,6 +14,8 @@ using GarmentShop.Domain.UserAggregate.ValueObjects;
 using Moq;
 using GarmentShop.Domain.Common.Errors;
 using System.Linq.Expressions;
+using System.ComponentModel.DataAnnotations;
+using FluentValidation.TestHelper;
 
 namespace GarmentShop.Application.Tests.XUnit.Auth.Queries.Login
 {
@@ -23,6 +25,7 @@ namespace GarmentShop.Application.Tests.XUnit.Auth.Queries.Login
         private readonly Mock<IUnitOfWork> unitOfWorkMock;
         private readonly LoginQueryHandler handler;
         private readonly Mock<IUserRepository> userRepositoryMock;
+        private readonly LoginQueryValidator validator;
 
         private readonly Mock<
             IGenericRepository<
@@ -34,6 +37,7 @@ namespace GarmentShop.Application.Tests.XUnit.Auth.Queries.Login
             unitOfWorkMock = new();
             userRepositoryMock = new();
             authRepositoryMock = new();
+            validator = new();
             handler = new LoginQueryHandler(
                 jwtTokenGeneratorMock.Object,
                 unitOfWorkMock.Object);
@@ -145,6 +149,49 @@ namespace GarmentShop.Application.Tests.XUnit.Auth.Queries.Login
             result.Errors.FirstOrDefault().Should().Be(Errors.Authentication.InvalidCredentials);
 
             unitOfWorkMock.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Never);
+        }
+
+        [Theory]
+        [InlineData(null, "Password1", "Email is required")]
+        [InlineData("", "Password1", "Email is required")]
+        [InlineData("invalid-email", "Password1", "Invalid email address")]
+        public void ValidateLoginQuery_InvalidEmail_ShouldHaveValidationErrors(
+            string email, 
+            string password, 
+            string expectedErrorMessage)
+        {
+            // Arrange
+            var loginQuery = new LoginQuery(email, password);
+
+            // Act
+            var result = validator.TestValidate(loginQuery);
+
+            // Assert
+            result.ShouldHaveValidationErrorFor(x => x.Email)
+                .WithErrorMessage(expectedErrorMessage);
+        }
+
+        [Theory]
+        [InlineData("test@example.com", null, "Password is required")]
+        [InlineData("test@example.com", "", "Password is required")]
+        [InlineData("test@example.com", "short", "Password must have at least 6 characters")]
+        [InlineData("test@example.com", "verylongpasswordthatexceedscharacterlimit", "Password cannot have more than 20 characters")]
+        [InlineData("test@example.com", "password", "Password must contain at least one number and one uppercase letter")]
+        [InlineData("test@example.com", "PASSWORD", "Password must contain at least one number and one uppercase letter")]
+        public void ValidateLoginQuery_InvalidPassword_ShouldHaveValidationErrors(
+            string email,
+            string password,
+            string expectedErrorMessage)
+        {
+            // Arrange
+            var loginQuery = new LoginQuery(email, password);
+
+            // Act
+            var result = validator.TestValidate(loginQuery);
+
+            // Assert
+            result.ShouldHaveValidationErrorFor(x => x.Password)
+                .WithErrorMessage(expectedErrorMessage);
         }
     }
 }
