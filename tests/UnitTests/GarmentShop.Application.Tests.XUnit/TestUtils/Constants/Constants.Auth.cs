@@ -16,6 +16,7 @@
             public const string ZipCode = "Zip Code";
             public const string Country = "Country";
             public const string JwtToken = "JwtToken";
+            public const string RoleName = "Customer";
         }
     }
 }

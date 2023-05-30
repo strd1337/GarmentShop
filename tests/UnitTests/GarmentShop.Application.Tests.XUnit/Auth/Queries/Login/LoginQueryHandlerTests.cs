@@ -14,7 +14,6 @@ using GarmentShop.Domain.UserAggregate.ValueObjects;
 using Moq;
 using GarmentShop.Domain.Common.Errors;
 using System.Linq.Expressions;
-using System.ComponentModel.DataAnnotations;
 using FluentValidation.TestHelper;
 
 namespace GarmentShop.Application.Tests.XUnit.Auth.Queries.Login
@@ -53,26 +52,22 @@ namespace GarmentShop.Application.Tests.XUnit.Auth.Queries.Login
             var jwtToken = AuthUtils.GenerateJwtToken();
 
             unitOfWorkMock
-                .Setup(x =>
-                    x.GetRepository<Authentication, AuthenticationId>(false))
+                .Setup(x => x.GetRepository<Authentication, AuthenticationId>(false))
                 .Returns(authRepositoryMock.Object);
 
             authRepositoryMock
-                .Setup(x =>
-                    x.FirstOrDefaultAsync(
-                        It.IsAny<Expression<Func<Authentication,
-                        bool>>>(),
-                        It.IsAny<CancellationToken>()))
+                .Setup(x => x.FirstOrDefaultAsync(
+                    It.IsAny<Expression<Func<Authentication, bool>>>(),
+                    It.IsAny<CancellationToken>()))
                 .ReturnsAsync(authUser);
 
             unitOfWorkMock.Setup(x => x.GetRepository<User, UserId>(true))
                 .Returns(userRepositoryMock.Object);
 
             userRepositoryMock
-                .Setup(x =>
-                    x.FindByIdAsync(
-                        authUser.UserId,
-                        It.IsAny<CancellationToken>()))
+                .Setup(x => x.FindByIdAsync(
+                    authUser.UserId,
+                    It.IsAny<CancellationToken>()))
                 .ReturnsAsync(user);
 
             jwtTokenGeneratorMock
@@ -99,16 +94,13 @@ namespace GarmentShop.Application.Tests.XUnit.Auth.Queries.Login
             var authUser = AuthUtils.CreateAuthUserWithInvalidPassword(user);
 
             unitOfWorkMock
-                .Setup(x =>
-                    x.GetRepository<Authentication, AuthenticationId>(false))
+                .Setup(x => x.GetRepository<Authentication, AuthenticationId>(false))
                 .Returns(authRepositoryMock.Object);
 
             authRepositoryMock
-                .Setup(x =>
-                    x.FirstOrDefaultAsync(
-                        It.IsAny<Expression<Func<Authentication,
-                        bool>>>(),
-                        It.IsAny<CancellationToken>()))
+                .Setup(x => x.FirstOrDefaultAsync(
+                    It.IsAny<Expression<Func<Authentication, bool>>>(),
+                    It.IsAny<CancellationToken>()))
                 .ReturnsAsync(authUser);
 
             // Act
@@ -129,16 +121,13 @@ namespace GarmentShop.Application.Tests.XUnit.Auth.Queries.Login
             Authentication? authUser = null;
 
             unitOfWorkMock
-                .Setup(x =>
-                    x.GetRepository<Authentication, AuthenticationId>(false))
+                .Setup(x => x.GetRepository<Authentication, AuthenticationId>(false))
                 .Returns(authRepositoryMock.Object);
 
             authRepositoryMock
-                .Setup(x =>
-                    x.FirstOrDefaultAsync(
-                        It.IsAny<Expression<Func<Authentication,
-                        bool>>>(),
-                        It.IsAny<CancellationToken>()))
+                .Setup(x => x.FirstOrDefaultAsync(
+                    It.IsAny<Expression<Func<Authentication, bool>>>(),
+                    It.IsAny<CancellationToken>()))
                 .ReturnsAsync(authUser);
 
             // Act
