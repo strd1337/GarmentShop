@@ -13,6 +13,7 @@ using GarmentShop.Domain.UserAggregate.Entities;
 using GarmentShop.Domain.UserAggregate.ValueObjects;
 using Moq;
 using System.Linq.Expressions;
+using GarmentShop.Domain.Common.Errors;
 
 namespace GarmentShop.Application.Tests.XUnit.Auth.Commands.Register
 {
@@ -29,7 +30,7 @@ namespace GarmentShop.Application.Tests.XUnit.Auth.Commands.Register
            IGenericRepository<
                Authentication, AuthenticationId>> authRepositoryMock;
 
-        public RegisterCommandHandlerTests() 
+        public RegisterCommandHandlerTests()
         {
             jwtTokenGeneratorMock = new();
             unitOfWorkMock = new();
@@ -41,7 +42,7 @@ namespace GarmentShop.Application.Tests.XUnit.Auth.Commands.Register
                 jwtTokenGeneratorMock.Object,
                 unitOfWorkMock.Object);
         }
-        
+
         [Fact]
         public async Task HandleRegisterCommand_ValidCommand_ReturnsAuthenticationResult()
         {
@@ -51,7 +52,7 @@ namespace GarmentShop.Application.Tests.XUnit.Auth.Commands.Register
             var user = AuthUtils.CreateUser();
             var registeringUser = AuthUtils.CreateAuthUserWithValidPassword(user);
             var jwtToken = AuthUtils.GenerateJwtToken();
-            Authentication? authUser = null; 
+            Authentication? authUser = null;
 
             unitOfWorkMock
                 .Setup(x =>
@@ -60,7 +61,7 @@ namespace GarmentShop.Application.Tests.XUnit.Auth.Commands.Register
 
             authRepositoryMock
                 .Setup(x => x.FirstOrDefaultAsync(
-                    It.IsAny<Expression<Func<Authentication, bool>>>(), 
+                    It.IsAny<Expression<Func<Authentication, bool>>>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(authUser);
 
@@ -70,35 +71,35 @@ namespace GarmentShop.Application.Tests.XUnit.Auth.Commands.Register
 
             roleRepositoryMock
                 .Setup(x => x.FirstOrDefaultAsync(
-                    It.IsAny<Expression<Func<Role, bool>>>(), 
+                    It.IsAny<Expression<Func<Role, bool>>>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(role);
-            
+
             unitOfWorkMock
                 .Setup(x => x.GetRepository<User, UserId>(true))
                 .Returns(userRepositoryMock.Object);
 
             userRepositoryMock
                 .Setup(x => x.AddRoleAsync(
-                    It.IsAny<User>(), 
+                    It.IsAny<User>(),
                     It.IsAny<Role>()))
                 .Verifiable();
 
             userRepositoryMock
                 .Setup(x => x.AddAsync(
-                    It.IsAny<User>(), 
+                    It.IsAny<User>(),
                     It.IsAny<CancellationToken>()))
                 .Verifiable();
 
             authRepositoryMock
                 .Setup(x => x.AddAsync(
-                    It.IsAny<Authentication>(), 
+                    It.IsAny<Authentication>(),
                     It.IsAny<CancellationToken>()))
                 .Verifiable();
 
             jwtTokenGeneratorMock
                 .Setup(x => x.GenerateToken(
-                    It.IsAny<Authentication>(), 
+                    It.IsAny<Authentication>(),
                     It.IsAny<User>()))
                 .Returns(jwtToken);
 
@@ -109,24 +110,54 @@ namespace GarmentShop.Application.Tests.XUnit.Auth.Commands.Register
             result.IsError.Should().BeFalse();
             result.Value.ValidateCreatedFrom(registeringUser, jwtToken);
 
-            userRepositoryMock.Verify(x => 
+            userRepositoryMock.Verify(x =>
                 x.AddRoleAsync(It.IsAny<User>(), It.IsAny<Role>()), Times.Once);
 
-            userRepositoryMock.Verify(x => 
+            userRepositoryMock.Verify(x =>
                 x.AddAsync(It.IsAny<User>(), It.IsAny<CancellationToken>()), Times.Once);
 
             authRepositoryMock
                 .Verify(x => x.FirstOrDefaultAsync(
-                    It.IsAny<Expression<Func<Authentication, bool>>>(), 
-                    It.IsAny<CancellationToken>()), Times.Once);
-            
-            authRepositoryMock
-                .Verify(x => x.AddAsync(
-                    It.IsAny<Authentication>(), 
+                    It.IsAny<Expression<Func<Authentication, bool>>>(),
                     It.IsAny<CancellationToken>()), Times.Once);
 
-            unitOfWorkMock.Verify(x => 
+            authRepositoryMock
+                .Verify(x => x.AddAsync(
+                    It.IsAny<Authentication>(),
+                    It.IsAny<CancellationToken>()), Times.Once);
+
+            unitOfWorkMock.Verify(x =>
                 x.SaveChangesAsync(CancellationToken.None), Times.Once);
-        } 
+        }
+
+        [Fact]
+        public async Task HandleRegisterCommand_DuplicateEmail_ReturnsDuplicateEmailError()
+        {
+            // Arrange
+            var registerCommand = RegisterCommandUtils.RegisterCommand();
+            var user = AuthUtils.CreateUser();
+            var authUser = AuthUtils.CreateAuthUserWithValidPassword(user);
+
+            unitOfWorkMock
+                .Setup(x =>
+                    x.GetRepository<Authentication, AuthenticationId>(false))
+                .Returns(authRepositoryMock.Object);
+
+            authRepositoryMock
+                .Setup(x => x.FirstOrDefaultAsync(
+                    It.IsAny<Expression<Func<Authentication, bool>>>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(authUser);
+
+            // Act
+            var result = await handler.Handle(registerCommand, CancellationToken.None);
+
+            // Assert
+            result.IsError.Should().BeTrue();
+            result.Errors.FirstOrDefault().Should().Be(Errors.User.DuplicateEmail);
+
+            unitOfWorkMock.Verify(x => 
+                x.SaveChangesAsync(CancellationToken.None), Times.Never);
+        }
     }
 }
