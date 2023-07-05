@@ -16,7 +16,7 @@ namespace GarmentShop.Application.Tests.XUnit.Auth.TestUtils
                 Constants.Auth.Email,
                 BCrypt.Net.BCrypt.HashPassword(Constants.Auth.Password, salt),
                 salt,
-                user.Id
+                UserId.Create(user.Id.Value)
             );
         }
 
@@ -29,7 +29,7 @@ namespace GarmentShop.Application.Tests.XUnit.Auth.TestUtils
                 Constants.Auth.Email,
                 BCrypt.Net.BCrypt.HashPassword(Constants.Auth.InvalidPassword, salt),
                 salt,
-                user.Id
+                UserId.Create(user.Id.Value)
             );
         }
 

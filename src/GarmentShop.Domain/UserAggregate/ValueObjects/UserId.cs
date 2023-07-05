@@ -14,7 +14,7 @@ namespace GarmentShop.Domain.UserAggregate.ValueObjects
         public static UserId CreateUnique() => new(Guid.NewGuid());
 
         public static UserId Create(Guid value)
-            => new UserId(value);
+            => new (value);
 
         public override IEnumerable<object> GetEqualityComponents()
         {

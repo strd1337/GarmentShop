@@ -1,7 +1,7 @@
 ﻿namespace GarmentShop.Domain.Common.Models
 {
     public abstract class Entity<TId> : IEquatable<Entity<TId>>
-        where TId : notnull
+        where TId : ValueObject
     {
         public TId Id { get; protected set; }
         public DateTime CreatedDate { get; protected set; } = DateTime.Now;

@@ -84,7 +84,7 @@ namespace GarmentShop.Infrastructure.Persistance.Repositories.Common
         private void ConvertDomainEventsToOutboxMessages<TId>()
             where TId : ValueObject
         {
-            var outboxMessages = dbContext.ChangeTracker
+            /*var outboxMessages = dbContext.ChangeTracker
                 .Entries<AggregateRoot<TId>>()
                 .Select(x => x.Entity)
                 .SelectMany(aggregateRoot =>
@@ -108,8 +108,8 @@ namespace GarmentShop.Infrastructure.Persistance.Repositories.Common
                     OccurredOnUtc = dateTimeProvider.UtcNow
                 })
                 .ToList();
-
-            dbContext.Set<OutboxMessage>().AddRange(outboxMessages);
+            */
+            dbContext.Set<OutboxMessage>().AddRange(/*outboxMessages*/);
         }
     }
 }
