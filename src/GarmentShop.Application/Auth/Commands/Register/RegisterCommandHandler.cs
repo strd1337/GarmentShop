@@ -77,6 +77,7 @@ namespace GarmentShop.Application.Auth.Commands.Register
             var token = jwtTokenGenerator.GenerateToken(registeringUser, user);
 
             return new AuthenticationResult(
+                registeringUser.Id.Value,
                 registeringUser,
                 token);
         }

@@ -59,6 +59,7 @@ namespace GarmentShop.Application.Auth.Queries.Login
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
             return new AuthenticationResult(
+                authUser.Id.Value,
                 authUser,
                 token);
         }
