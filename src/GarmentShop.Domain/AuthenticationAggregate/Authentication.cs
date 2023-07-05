@@ -5,7 +5,7 @@ using GarmentShop.Domain.UserAggregate.ValueObjects;
 
 namespace GarmentShop.Domain.AuthenticationAggregate
 {
-    public sealed class Authentication : AggregateRoot<AuthenticationId>
+    public sealed class Authentication : AggregateRoot<AuthenticationId, Guid>
     {
         public string UserName { get; private set; }
         public string Email { get; private set; }
