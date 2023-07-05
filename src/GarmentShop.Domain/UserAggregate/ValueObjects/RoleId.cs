@@ -2,9 +2,9 @@
 
 namespace GarmentShop.Domain.UserAggregate.ValueObjects
 {
-    public sealed class RoleId : ValueObject
+    public sealed class RoleId : AggregateRootId<Guid>
     {
-        public Guid Value { get; }
+        public override Guid Value { get; protected set; }
 
         private RoleId(Guid value)
         {

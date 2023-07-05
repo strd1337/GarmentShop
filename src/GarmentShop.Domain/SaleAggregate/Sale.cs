@@ -1,12 +1,11 @@
 ﻿using GarmentShop.Domain.Common.Models;
 using GarmentShop.Domain.SaleAggregate.Entities;
 using GarmentShop.Domain.SaleAggregate.ValueObjects;
-using GarmentShop.Domain.UserAggregate;
 using GarmentShop.Domain.UserAggregate.ValueObjects;
 
 namespace GarmentShop.Domain.SaleAggregate
 {
-    public sealed class Sale : AggregateRoot<SaleId>
+    public sealed class Sale : AggregateRoot<SaleId, Guid>
     {
         private readonly List<Order> orders = new();
 

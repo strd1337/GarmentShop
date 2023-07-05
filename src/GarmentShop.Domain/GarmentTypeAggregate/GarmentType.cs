@@ -4,7 +4,7 @@ using GarmentShop.Domain.GarmentTypeAggregate.ValueObjects;
 
 namespace GarmentShop.Domain.GarmentTypeAggregate
 {
-    public sealed class GarmentType : AggregateRoot<GarmentTypeId>
+    public sealed class GarmentType : AggregateRoot<GarmentTypeId, Guid>
     {
         public string Name { get; private set; }
         public string Description { get; private set; }
