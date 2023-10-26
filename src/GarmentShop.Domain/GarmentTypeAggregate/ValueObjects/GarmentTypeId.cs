@@ -2,9 +2,9 @@
 
 namespace GarmentShop.Domain.GarmentTypeAggregate.ValueObjects
 {
-    public sealed class GarmentTypeId : ValueObject
+    public sealed class GarmentTypeId : AggregateRootId<Guid>
     {
-        public Guid Value { get; }
+        public override Guid Value { get; protected set; }
 
         private GarmentTypeId(Guid value)
         {

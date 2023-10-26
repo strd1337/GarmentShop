@@ -1,7 +1,7 @@
 ﻿namespace GarmentShop.Contracts.Authentication
 {
     public record AuthenticationResponse(
-        Guid Id,
+        Guid AuthId,
         Guid UserId,
         string UserName,
         string Email,

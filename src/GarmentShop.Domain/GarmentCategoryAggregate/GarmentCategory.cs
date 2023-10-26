@@ -3,7 +3,7 @@ using GarmentShop.Domain.GarmentCategoryAggregate.ValueObjects;
 
 namespace GarmentShop.Domain.GarmentCategoryAggregate
 {
-    public sealed class GarmentCategory : AggregateRoot<GarmentCategoryId>
+    public sealed class GarmentCategory : AggregateRoot<GarmentCategoryId, Guid>
     {
         public string Name { get; private set; }
         public string Description { get; private set; }

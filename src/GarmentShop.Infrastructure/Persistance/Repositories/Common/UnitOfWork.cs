@@ -1,6 +1,5 @@
 ﻿using GarmentShop.Application.Common.Interfaces.Persistance.CommonRepositories;
 using GarmentShop.Application.Common.Services;
-using GarmentShop.Domain.AuthenticationAggregate.ValueObjects;
 using GarmentShop.Domain.Common.Models;
 using GarmentShop.Domain.Common.Outbox;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -56,7 +55,7 @@ namespace GarmentShop.Infrastructure.Persistance.Repositories.Common
         public async Task<int> SaveChangesAsync(
             CancellationToken cancellationToken)
         {
-            ConvertDomainEventsToOutboxMessages<AuthenticationId>();
+            ConvertDomainEventsToOutboxMessages();
 
             return await dbContext.SaveChangesAsync(cancellationToken);
         }
@@ -81,17 +80,16 @@ namespace GarmentShop.Infrastructure.Persistance.Repositories.Common
             isDisposed = true;
         }
 
-        private void ConvertDomainEventsToOutboxMessages<TId>()
-            where TId : ValueObject
+        private void ConvertDomainEventsToOutboxMessages()
         {
             var outboxMessages = dbContext.ChangeTracker
-                .Entries<AggregateRoot<TId>>()
-                .Select(x => x.Entity)
-                .SelectMany(aggregateRoot =>
+                .Entries<IHasDomainEvents>()
+                .Select(entry => entry.Entity)
+                .SelectMany(entry =>
                 {
-                    var domainEvents = aggregateRoot.GetDomainEvents();
+                    var domainEvents = entry.GetDomainEvents();
 
-                    aggregateRoot.ClearDomainEvents();
+                    entry.ClearDomainEvents();
 
                     return domainEvents;
                 })
@@ -108,7 +106,7 @@ namespace GarmentShop.Infrastructure.Persistance.Repositories.Common
                     OccurredOnUtc = dateTimeProvider.UtcNow
                 })
                 .ToList();
-
+            
             dbContext.Set<OutboxMessage>().AddRange(outboxMessages);
         }
     }

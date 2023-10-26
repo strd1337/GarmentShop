@@ -5,7 +5,7 @@ using GarmentShop.Domain.Common.Models;
 
 namespace GarmentShop.Domain.UserAggregate
 {
-    public sealed class User : AggregateRoot<UserId>
+    public sealed class User : AggregateRoot<UserId, Guid>
     { 
         private readonly List<UserRole> roles = new();
         private readonly List<SaleId> saleIds = new();

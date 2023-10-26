@@ -3,7 +3,7 @@ using GarmentShop.Domain.Common.Models;
 
 namespace GarmentShop.Domain.BrandAggregate
 {
-    public sealed class Brand : AggregateRoot<BrandId>
+    public sealed class Brand : AggregateRoot<BrandId, Guid>
     {
         public string Name { get; private set; }
         public string Description { get; private set; }

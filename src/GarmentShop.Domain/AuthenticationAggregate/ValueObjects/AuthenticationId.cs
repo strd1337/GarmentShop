@@ -2,9 +2,9 @@
 
 namespace GarmentShop.Domain.AuthenticationAggregate.ValueObjects
 {
-    public sealed class AuthenticationId : ValueObject
+    public sealed class AuthenticationId : AggregateRootId<Guid>
     {
-        public Guid Value { get; }
+        public override Guid Value { get; protected set; }
 
         private AuthenticationId(Guid value)
         {

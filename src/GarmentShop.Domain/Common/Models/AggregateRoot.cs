@@ -2,26 +2,14 @@
 
 namespace GarmentShop.Domain.Common.Models
 {
-    public abstract class AggregateRoot<TId> : Entity<TId>
-        where TId : notnull
-    {
-        private readonly List<IDomainEvent> domainEvents = new();
+    public abstract class AggregateRoot<TId, TIdType> : Entity<TId>
+        where TId : AggregateRootId<TIdType>
+    {  
+        public new AggregateRootId<TIdType> Id { get; protected set; }
 
-        protected AggregateRoot(TId id) : base(id)
+        protected AggregateRoot(TId id) 
         {
-        }
-
-        public void RaiseDomainEvent(IDomainEvent @event)
-        {
-            domainEvents.Add(@event);
-        }
-
-        public IReadOnlyCollection<IDomainEvent> GetDomainEvents()
-            => domainEvents.ToList();
-
-        public void ClearDomainEvents()
-        {
-            domainEvents.Clear();
+            Id =  id;
         }
 
 #pragma warning disable CS8618

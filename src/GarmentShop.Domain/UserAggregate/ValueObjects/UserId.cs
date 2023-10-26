@@ -2,9 +2,9 @@
 
 namespace GarmentShop.Domain.UserAggregate.ValueObjects
 {
-    public sealed class UserId : ValueObject
+    public sealed class UserId : AggregateRootId<Guid>
     {
-        public Guid Value { get; }
+        public override Guid Value { get; protected set; }
 
         private UserId(Guid value)
         {
@@ -14,7 +14,7 @@ namespace GarmentShop.Domain.UserAggregate.ValueObjects
         public static UserId CreateUnique() => new(Guid.NewGuid());
 
         public static UserId Create(Guid value)
-            => new UserId(value);
+            => new (value);
 
         public override IEnumerable<object> GetEqualityComponents()
         {
