@@ -30,10 +30,10 @@ namespace GarmentShop.Application.Auth.Events
             CancellationToken cancellationToken)
         {
             var loggingInUser = await unitOfWork
-               .GetRepository<Authentication, AuthenticationId>()
-               .GetByIdAsync(
-                     AuthenticationId.Create(notification.AuthId),
-                     cancellationToken);
+                .GetRepository<Authentication, AuthenticationId>()
+                .GetByIdAsync(
+                    AuthenticationId.Create(notification.AuthId),
+                    cancellationToken);
 
             if (loggingInUser is null)
             {
