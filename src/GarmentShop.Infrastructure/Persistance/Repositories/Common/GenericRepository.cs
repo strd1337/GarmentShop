@@ -23,7 +23,7 @@ namespace GarmentShop.Infrastructure.Persistance.Repositories.Common
         {
             return await dbContext
                 .Set<TEntity>()
-                .FirstOrDefaultAsync(e => e.Id.Equals(id), 
+                .FirstOrDefaultAsync(e => e.Id == id, 
                     cancellationToken);
         }
 

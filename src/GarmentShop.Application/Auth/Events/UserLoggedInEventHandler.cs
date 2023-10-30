@@ -12,12 +12,12 @@ namespace GarmentShop.Application.Auth.Events
         : IDomainEventHandler<UserLoggedInEvent>
     {
         private readonly IUnitOfWork unitOfWork;
-        private readonly ILogger<UserRegisteredEventHandler> logger;
+        private readonly ILogger<UserLoggedInEventHandler> logger;
         private readonly IDateTimeProvider dateTimeProvider;
 
         public UserLoggedInEventHandler(
             IUnitOfWork unitOfWork, 
-            ILogger<UserRegisteredEventHandler> logger, 
+            ILogger<UserLoggedInEventHandler> logger, 
             IDateTimeProvider dateTimeProvider)
         {
             this.unitOfWork = unitOfWork;
@@ -30,10 +30,10 @@ namespace GarmentShop.Application.Auth.Events
             CancellationToken cancellationToken)
         {
             var loggingInUser = await unitOfWork
-               .GetRepository<Authentication, AuthenticationId>()
-               .GetByIdAsync(
+                .GetRepository<Authentication, AuthenticationId>()
+                .GetByIdAsync(
                     AuthenticationId.Create(notification.AuthId),
-                    cancellationToken);   
+                    cancellationToken);
 
             if (loggingInUser is null)
             {
@@ -49,6 +49,8 @@ namespace GarmentShop.Application.Auth.Events
                 "UserId: {@UserId}, Date: {@DateTimeUtc}",
                 loggingInUser.Id.Value, loggingInUser.UserId.Value, 
                 dateTimeProvider.UtcNow);
+
+            return;
         }
     }
 }

@@ -11,6 +11,7 @@ using GarmentShop.Application.Common.Interfaces.Persistance.CommonRepositories;
 using GarmentShop.Domain.AuthenticationAggregate.ValueObjects;
 using GarmentShop.Domain.UserAggregate.Entities;
 using GarmentShop.Application.Common.Interfaces.Persistance.UserRepositories;
+using GarmentShop.Application.Common.Interfaces.Persistance.AuthRepositories;
 
 namespace GarmentShop.Application.Auth.Commands.Register
 {
@@ -19,27 +20,32 @@ namespace GarmentShop.Application.Auth.Commands.Register
     {
         private readonly IJwtTokenGenerator jwtTokenGenerator;
         private readonly IUnitOfWork unitOfWork;
+        private readonly IAuthRepository authRepository;
 
         public RegisterCommandHandler(
             IJwtTokenGenerator jwtTokenGenerator, 
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            IAuthRepository authRepository)
         {
             this.jwtTokenGenerator = jwtTokenGenerator;
             this.unitOfWork = unitOfWork;
+            this.authRepository = authRepository;
         }
 
         public async Task<ErrorOr<AuthenticationResult>> Handle(
             RegisterCommand command,  
             CancellationToken cancellationToken)
         {
-            if (await unitOfWork
-                .GetRepository<Authentication, AuthenticationId>()
-                .FirstOrDefaultAsync(
-                    x => x.Email == command.Email,
-                    cancellationToken) 
-                is not null)
+            if (await authRepository.IsEmailUniqueAsync(
+                command.Email, cancellationToken))
             {
                 return Errors.User.DuplicateEmail;
+            }
+
+            if (await authRepository.IsUsernameUniqueAsync(
+                command.UserName, cancellationToken))
+            {
+                return Errors.User.DuplicateUsername;
             }
 
             var role = await unitOfWork

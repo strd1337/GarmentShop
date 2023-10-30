@@ -13,7 +13,6 @@ using GarmentShop.Infrastructure.Persistance.Repositories.Common;
 using GarmentShop.Infrastructure.Persistance;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
-using GarmentShop.Infrastructure.Auth.Permissions;
 using GarmentShop.Infrastructure.Auth.Roles;
 using GarmentShop.Domain.Common.Models;
 using GarmentShop.Domain.UserAggregate;
@@ -24,6 +23,8 @@ using Quartz;
 using GarmentShop.Infrastructure.BackgroundJobs;
 using MediatR;
 using GarmentShop.Infrastructure.Idempotence;
+using GarmentShop.Application.Common.Interfaces.Persistance.AuthRepositories;
+using GarmentShop.Infrastructure.Persistance.Repositories.AuthAgg;
 
 namespace GarmentShop.Infrastructure
 {
@@ -89,6 +90,7 @@ namespace GarmentShop.Infrastructure
         {
             services
                 .AddScoped<IUnitOfWork, UnitOfWork>()
+                .AddScoped<IAuthRepository, AuthRepository>()
                 .AddCustomRepository<User, UserId, UserRepository>()
                 .AddCustomRepository<Role, RoleId, RoleRepository>();
 
@@ -112,12 +114,7 @@ namespace GarmentShop.Infrastructure
            ConfigurationManager configuration)
         {
             var jwtSettings = new JwtSettings();
-            configuration.Bind(JwtSettings.SectionName, jwtSettings);
-
-            services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
-            services.AddSingleton<IAuthorizationPolicyProvider, PermissionAuthorizationPolicyProvider>();
-            services.AddSingleton<IAuthorizationHandler, RoleAuthorizationHandler>();
-            services.AddSingleton<IAuthorizationPolicyProvider, RoleAuthorizationPolicyProvider>();
+            configuration.Bind(JwtSettings.SectionName, jwtSettings); 
 
             services.AddSingleton(Options.Create(jwtSettings));
             services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
@@ -135,6 +132,9 @@ namespace GarmentShop.Infrastructure
                         IssuerSigningKey = new SymmetricSecurityKey(
                             Encoding.UTF8.GetBytes(jwtSettings.Secret))
                     });
+
+            services.AddSingleton<IAuthorizationHandler, RoleAuthorizationHandler>();
+            services.AddSingleton<IAuthorizationPolicyProvider, RoleAuthorizationPolicyProvider>();
 
             return services;
         } 

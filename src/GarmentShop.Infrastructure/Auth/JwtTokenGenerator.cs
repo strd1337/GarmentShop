@@ -22,7 +22,7 @@ namespace GarmentShop.Infrastructure.Auth
             IOptions<JwtSettings> jwtOptions)
         {
             this.dateTimeProvider = dateTimeProvider;
-            this.jwtSettings = jwtOptions.Value;
+            jwtSettings = jwtOptions.Value;
         }
 
         public string GenerateToken(Authentication authUser, User user) 
@@ -37,7 +37,7 @@ namespace GarmentShop.Infrastructure.Auth
             var permissions = new List<Permission>();
             foreach (var userRole in user.Roles)
             {
-                claims.Add(new(CustomClaims.Roles, 
+                claims.Add(new(CustomClaims.Roles,
                     Enum.GetName(typeof(RoleType), userRole.Role.Type)!));
 
                 permissions.AddRange(userRole.Role.Permissions);

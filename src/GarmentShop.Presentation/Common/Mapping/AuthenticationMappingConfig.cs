@@ -1,6 +1,5 @@
 ﻿using GarmentShop.Application.Auth.Common;
 using GarmentShop.Contracts.Authentication;
-using GarmentShop.Domain.Common.Models;
 using Mapster;
 
 namespace GarmentShop.Presentation.Common.Mapping
