@@ -1,5 +1,4 @@
-﻿using GarmentShop.Domain.Common.Models;
-using MediatR;
+﻿using MediatR;
 
 namespace GarmentShop.Domain.Common.Events
 {

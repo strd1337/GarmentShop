@@ -1,5 +1,4 @@
-﻿using GarmentShop.Infrastructure.Auth.Permissions;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 
 namespace GarmentShop.Infrastructure.Auth.Roles
@@ -23,7 +22,7 @@ namespace GarmentShop.Infrastructure.Auth.Roles
             }
 
             return new AuthorizationPolicyBuilder()
-                .AddRequirements(new PermissionRequirement(policyName))
+                .AddRequirements(new RoleRequirement(policyName))
                 .Build();
         }
     }

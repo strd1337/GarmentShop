@@ -30,8 +30,7 @@ namespace GarmentShop.Presentation.Controllers.Auth
         {
             var command = mapper.Map<RegisterCommand>(request);
 
-            var authResult = await mediator
-                .Send(command, cancellationToken);
+            var authResult = await mediator.Send(command, cancellationToken);
 
             return authResult.Match(
                 authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),
@@ -46,7 +45,7 @@ namespace GarmentShop.Presentation.Controllers.Auth
             var query = mapper.Map<LoginQuery>(request);
 
             var authResult = await mediator.Send(query, cancellationToken);
-
+            
             if (authResult.IsError && 
                 authResult.FirstError == Errors.Authentication.InvalidCredentials)
             {
@@ -56,7 +55,7 @@ namespace GarmentShop.Presentation.Controllers.Auth
             }
 
             return authResult.Match(
-                 authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),
+                authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),
                 errors => Problem(errors));
         }
     }

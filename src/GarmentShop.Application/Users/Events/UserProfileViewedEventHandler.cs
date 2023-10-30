@@ -3,21 +3,21 @@ using GarmentShop.Application.Common.Services;
 using GarmentShop.Domain.AuthenticationAggregate;
 using GarmentShop.Domain.AuthenticationAggregate.ValueObjects;
 using GarmentShop.Domain.Common.Events;
-using GarmentShop.Domain.Events.Auth;
+using GarmentShop.Domain.Events.User;
 using Microsoft.Extensions.Logging;
 
-namespace GarmentShop.Application.Auth.Events
+namespace GarmentShop.Application.Users.Events
 {
-    public sealed class UserRegisteredEventHandler
-        : IDomainEventHandler<UserRegisteredEvent>
+    public sealed class UserProfileViewedEventHandler :
+        IDomainEventHandler<UserProfileViewedEvent>
     {
         private readonly IUnitOfWork unitOfWork;
-        private readonly ILogger<UserRegisteredEventHandler> logger;
+        private readonly ILogger<UserProfileViewedEventHandler> logger;
         private readonly IDateTimeProvider dateTimeProvider;
-
-        public UserRegisteredEventHandler(
+        
+        public UserProfileViewedEventHandler(
             IUnitOfWork unitOfWork,
-            ILogger<UserRegisteredEventHandler> logger,
+            ILogger<UserProfileViewedEventHandler> logger,
             IDateTimeProvider dateTimeProvider)
         {
             this.unitOfWork = unitOfWork;
@@ -26,29 +26,28 @@ namespace GarmentShop.Application.Auth.Events
         }
 
         public async Task Handle(
-            UserRegisteredEvent notification,
+            UserProfileViewedEvent notification, 
             CancellationToken cancellationToken)
         {
-            var registeredUser = await unitOfWork
-                .GetRepository<Authentication, AuthenticationId>()
-                .GetByIdAsync(
-                     AuthenticationId.Create(notification.AuthId),
-                     cancellationToken);
+            var authUser = await unitOfWork
+               .GetRepository<Authentication, AuthenticationId>()
+               .GetByIdAsync(
+                    AuthenticationId.Create(notification.AuthId),
+                    cancellationToken);
 
-            if (registeredUser is null)
+            if (authUser is null)
             {
                 logger.LogInformation(
-                    "Registered user is not found in database " +
-                    "during registration. {@DateTimeUtc}",
+                    "User is not found in database during logging in. {@DateTimeUtc}",
                     dateTimeProvider.UtcNow);
 
                 return;
             }
 
             logger.LogInformation(
-                "User registered AuthId: {@AuthId}, " +
+                "User viewed own profile AuthId: {@AuthId}, " +
                 "UserId: {@UserId}, Date: {@DateTimeUtc}",
-                registeredUser.Id.Value, registeredUser.UserId.Value, 
+                authUser.Id.Value, authUser.UserId.Value,
                 dateTimeProvider.UtcNow);
 
             return;
