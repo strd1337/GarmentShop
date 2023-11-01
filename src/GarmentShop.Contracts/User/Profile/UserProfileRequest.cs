@@ -1,4 +1,4 @@
-﻿namespace GarmentShop.Contracts.User
+﻿namespace GarmentShop.Contracts.User.Profile
 {
     public record UserProfileRequest(string UserName);
 }

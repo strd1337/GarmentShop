@@ -1,8 +1,8 @@
 ﻿using GarmentShop.Application.Users.Common;
-using GarmentShop.Contracts.User;
+using GarmentShop.Contracts.User.Profile;
 using Mapster;
 
-namespace GarmentShop.Presentation.Common.Mapping
+namespace GarmentShop.Presentation.Common.Mapping.User.Profile
 {
     public class UserMappingConfig : IRegister
     {

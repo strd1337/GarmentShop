@@ -2,7 +2,7 @@
 using GarmentShop.Contracts.Authentication;
 using Mapster;
 
-namespace GarmentShop.Presentation.Common.Mapping
+namespace GarmentShop.Presentation.Common.Mapping.Auth
 {
     public class AuthenticationMappingConfig : IRegister
     {
