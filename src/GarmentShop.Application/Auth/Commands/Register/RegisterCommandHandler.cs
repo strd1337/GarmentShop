@@ -36,13 +36,13 @@ namespace GarmentShop.Application.Auth.Commands.Register
             RegisterCommand command,  
             CancellationToken cancellationToken)
         {
-            if (await authRepository.IsEmailUniqueAsync(
+            if (await authRepository.IsEmailNotUniqueAsync(
                 command.Email, cancellationToken))
             {
                 return Errors.User.DuplicateEmail;
             }
 
-            if (await authRepository.IsUsernameUniqueAsync(
+            if (await authRepository.IsUsernameNotUniqueAsync(
                 command.UserName, cancellationToken))
             {
                 return Errors.User.DuplicateUsername;
