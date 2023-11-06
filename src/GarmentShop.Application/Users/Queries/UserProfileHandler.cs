@@ -35,7 +35,7 @@ namespace GarmentShop.Application.Users.Queries
 
             if (authUser is null)
             {
-                return Errors.User.UserNotFound;
+                return Errors.User.NotFound;
             }
 
             var userRepository = unitOfWork.GetRepository<User, UserId>(true)
@@ -46,7 +46,7 @@ namespace GarmentShop.Application.Users.Queries
 
             if (user is null)
             {
-                return Errors.User.UserNotFound;
+                return Errors.User.NotFound;
             }
 
             user.RaiseDomainEvent(

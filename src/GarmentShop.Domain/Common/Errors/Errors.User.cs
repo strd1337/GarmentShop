@@ -14,9 +14,14 @@ namespace GarmentShop.Domain.Common.Errors
                 code: "User.DuplicateUsername",
                 description: "Username is already in use.");
 
-            public static Error UserNotFound => Error.NotFound(
-                code: "User.UserNotFound",
+            public static Error NotFound => Error.NotFound(
+                code: "User.NotFound",
                 description: "User is not found.");
+
+            public static Error DataConflict => Error.Conflict(
+                code: "User.DataConflict",
+                description: "Data conflict: " +
+                    "The provided data is the same as the existing data.");
         }
     }
 }

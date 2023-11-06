@@ -7,10 +7,10 @@ namespace GarmentShop.Application.Common.Interfaces.Persistance.AuthRepositories
     public interface IAuthRepository
         : IGenericRepository<Authentication, AuthenticationId>
     {
-        Task<bool> IsUsernameUniqueAsync(string userName,
+        Task<bool> IsUsernameNotUniqueAsync(string userName,
             CancellationToken cancellationToken = default);
 
-        Task<bool> IsEmailUniqueAsync(string email,
+        Task<bool> IsEmailNotUniqueAsync(string email,
             CancellationToken cancellationToken = default);
     }
 } 

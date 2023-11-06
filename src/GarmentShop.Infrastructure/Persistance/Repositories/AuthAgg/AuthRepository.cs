@@ -15,7 +15,7 @@ namespace GarmentShop.Infrastructure.Persistance.Repositories.AuthAgg
         {
         }
 
-        public async Task<bool> IsEmailUniqueAsync(
+        public async Task<bool> IsEmailNotUniqueAsync(
             string email, 
             CancellationToken cancellationToken = default)
         {
@@ -23,7 +23,7 @@ namespace GarmentShop.Infrastructure.Persistance.Repositories.AuthAgg
                 .AnyAsync(u => u.Email.Equals(email), cancellationToken);
         }
 
-        public async Task<bool> IsUsernameUniqueAsync(
+        public async Task<bool> IsUsernameNotUniqueAsync(
             string userName, 
             CancellationToken cancellationToken = default)
         {

@@ -39,6 +39,12 @@ namespace GarmentShop.Domain.UserAggregate
             roles.Add(UserRole.Create(role));
         }
 
+        public void UpdateInformation(
+            UserDetailInformation updatedInformation)
+        {
+            Information = updatedInformation;
+        }
+
 #pragma warning disable CS8618
         private User() 
         {

@@ -1,23 +1,23 @@
 ﻿using GarmentShop.Application.Common.Interfaces.Persistance.CommonRepositories;
 using GarmentShop.Application.Common.Services;
-using GarmentShop.Domain.AuthenticationAggregate;
-using GarmentShop.Domain.AuthenticationAggregate.ValueObjects;
 using GarmentShop.Domain.Common.Events;
 using GarmentShop.Domain.Events.User;
+using GarmentShop.Domain.UserAggregate;
+using GarmentShop.Domain.UserAggregate.ValueObjects;
 using Microsoft.Extensions.Logging;
 
 namespace GarmentShop.Application.Users.Events
 {
-    public sealed class UserProfileViewedEventHandler :
-        IDomainEventHandler<UserProfileViewedEvent>
+    public sealed class UserProfileUpdatedEventHandler :
+        IDomainEventHandler<UserProfileUpdatedEvent>
     {
         private readonly IUnitOfWork unitOfWork;
-        private readonly ILogger<UserProfileViewedEventHandler> logger;
+        private readonly ILogger<UserProfileUpdatedEventHandler> logger;
         private readonly IDateTimeProvider dateTimeProvider;
-        
-        public UserProfileViewedEventHandler(
+
+        public UserProfileUpdatedEventHandler(
             IUnitOfWork unitOfWork,
-            ILogger<UserProfileViewedEventHandler> logger,
+            ILogger<UserProfileUpdatedEventHandler> logger,
             IDateTimeProvider dateTimeProvider)
         {
             this.unitOfWork = unitOfWork;
@@ -26,16 +26,16 @@ namespace GarmentShop.Application.Users.Events
         }
 
         public async Task Handle(
-            UserProfileViewedEvent notification, 
+            UserProfileUpdatedEvent notification,
             CancellationToken cancellationToken)
         {
-            var authUser = await unitOfWork
-               .GetRepository<Authentication, AuthenticationId>()
+            var user = await unitOfWork
+               .GetRepository<User, UserId>()
                .GetByIdAsync(
-                    AuthenticationId.Create(notification.AuthId),
+                    UserId.Create(notification.UserId),
                     cancellationToken);
 
-            if (authUser is null)
+            if (user is null)
             {
                 logger.LogInformation(
                     "User is not found in database during logging in. " +
@@ -45,9 +45,13 @@ namespace GarmentShop.Application.Users.Events
             }
 
             logger.LogInformation(
-                "User viewed own profile AuthId: {@AuthId}, " +
-                "UserId: {@UserId}, Date: {@DateTimeUtc}",
-                authUser.Id.Value, authUser.UserId.Value,
+                "User updated own profile UserId: {@UserId}, " +
+                "FirstName: {@FirstName}, LastName: {@LastName}, " +
+                "PhoneNumber: {@PhoneNumber}, Address: {@Address}, " +
+                "City: {@City}, ZipCode: {@ZipCode}, Country: {@Country}, " +
+                "Date: {@DateTimeUtc}", notification.UserId, notification.FirstName, 
+                notification.LastName, notification.PhoneNumber, notification.Address, 
+                notification.City, notification.ZipCode, notification.Country,
                 dateTimeProvider.UtcNow);
 
             return;
