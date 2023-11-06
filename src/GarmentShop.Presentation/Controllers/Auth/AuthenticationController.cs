@@ -1,10 +1,12 @@
-﻿using GarmentShop.Application.Auth.Commands.Register;
+﻿using GarmentShop.Application.Auth.Commands.ChangePassword;
+using GarmentShop.Application.Auth.Commands.Register;
 using GarmentShop.Application.Auth.Queries.Login;
 using GarmentShop.Contracts.Authentication;
 using GarmentShop.Domain.Common.Errors;
 using GarmentShop.Presentation.Controllers.Common;
 using MapsterMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GarmentShop.Presentation.Controllers.Auth
@@ -56,6 +58,23 @@ namespace GarmentShop.Presentation.Controllers.Auth
 
             return authResult.Match(
                 authResult => Ok(mapper.Map<AuthenticationResponse>(authResult)),
+                errors => Problem(errors));
+        }
+
+        [Authorize]
+        [HttpPost("changepassword")]
+        public async Task<IActionResult> ChangePassword(
+            ChangePasswordRequest request,
+            CancellationToken cancellationToken)
+        {
+            var command = mapper.Map<ChangePasswordCommand>(request);
+
+            var authResult = await mediator
+                .Send(command, cancellationToken);
+
+            return authResult.Match(
+                authResult => Ok(mapper
+                    .Map<AuthenticationResponse>(authResult)),
                 errors => Problem(errors));
         }
     }
