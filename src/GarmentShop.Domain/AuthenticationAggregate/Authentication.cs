@@ -1,6 +1,7 @@
 ﻿using GarmentShop.Domain.AuthenticationAggregate.ValueObjects;
 using GarmentShop.Domain.Common.Models;
 using GarmentShop.Domain.Events.Auth;
+using GarmentShop.Domain.SaleAggregate.ValueObjects;
 using GarmentShop.Domain.UserAggregate.ValueObjects;
 
 namespace GarmentShop.Domain.AuthenticationAggregate
@@ -51,7 +52,15 @@ namespace GarmentShop.Domain.AuthenticationAggregate
 
             return registeredUser;
         }
-                
+
+        public void SetPassword(
+            string passwordHash,
+            string salt)
+        {
+            PasswordHash = passwordHash;
+            Salt = salt;
+        }
+
 #pragma warning disable CS8618
         private Authentication()
         {
