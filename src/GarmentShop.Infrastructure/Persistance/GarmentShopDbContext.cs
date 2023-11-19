@@ -7,6 +7,8 @@ using GarmentShop.Domain.GarmentTypeAggregate;
 using GarmentShop.Domain.SaleAggregate;
 using GarmentShop.Domain.UserAggregate;
 using GarmentShop.Domain.UserAggregate.Entities;
+using GarmentShop.Infrastructure.Persistance.Configurations;
+using GarmentShop.Infrastructure.Persistance.IdentityManagement;
 using Microsoft.EntityFrameworkCore;
 
 namespace GarmentShop.Infrastructure.Persistance
@@ -26,6 +28,12 @@ namespace GarmentShop.Infrastructure.Persistance
                     typeof(GarmentShopDbContext).Assembly);
 
             base.OnModelCreating(modelBuilder);
+
+            IdentityGenerator identityGenerator = IdentityGenerator.Create();
+            modelBuilder.ApplyConfiguration(
+                new GarmentTypeConfiguration(identityGenerator));
+            modelBuilder.ApplyConfiguration(
+                new GarmentCategoryConfiguration(identityGenerator));
         }
 
         public DbSet<Authentication> RegisteredUsers { get; set; } = null!;

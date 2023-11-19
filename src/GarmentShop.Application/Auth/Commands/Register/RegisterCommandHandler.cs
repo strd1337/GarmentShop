@@ -51,7 +51,7 @@ namespace GarmentShop.Application.Auth.Commands.Register
             var role = await unitOfWork
                  .GetRepository<Role, RoleId>()
                  .FirstOrDefaultAsync(
-                    x => x.Name == Enum.GetName(typeof(RoleType), RoleType.Customer)!,
+                    x => x.Name == RoleType.Customer.ToString(),
                     cancellationToken);
 
             var user = User.Create(UserDetailInformation.CreateNew());

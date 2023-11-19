@@ -1,6 +1,7 @@
 ﻿using GarmentShop.Domain.UserAggregate.Entities;
 using GarmentShop.Domain.UserAggregate.Enums;
 using GarmentShop.Domain.UserAggregate.ValueObjects;
+using GarmentShop.Infrastructure.Persistance.IdentityManagement;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -11,14 +12,15 @@ namespace GarmentShop.Infrastructure.Persistance.Configurations
     {
         public void Configure(EntityTypeBuilder<Role> builder)
         {
-            SeedRoleIds();
+            var roleIds = IdentityGenerator.Create().RoleIds;
 
             ConfigureRolesTable(builder);
-            ConfigureRolePermissionsTable(builder);
-            SeedRoleTableWithData(builder);
+            ConfigureRolePermissionsTable(builder, roleIds);
+            SeedRoleTableWithData(builder, roleIds);
         }
 
-        private static void ConfigureRolesTable(EntityTypeBuilder<Role> builder)
+        private static void ConfigureRolesTable(
+            EntityTypeBuilder<Role> builder)
         {
             builder.ToTable("Roles");
 
@@ -40,13 +42,15 @@ namespace GarmentShop.Infrastructure.Persistance.Configurations
                 .HasMaxLength(50);
         }
 
-        private static void ConfigureRolePermissionsTable(EntityTypeBuilder<Role> builder)
+        private static void ConfigureRolePermissionsTable(
+            EntityTypeBuilder<Role> builder,
+            IReadOnlyList<RoleId> roleIds)
         {
             builder.OwnsMany(r => r.Permissions, pb =>
             {
                 pb.ToTable("RolePermissions");
 
-                pb.WithOwner().HasForeignKey("RoleId");
+                pb.WithOwner().HasForeignKey("RoleId").HasPrincipalKey("Id");
 
                 pb.HasKey(nameof(Permission.Id), "RoleId");
 
@@ -66,33 +70,36 @@ namespace GarmentShop.Infrastructure.Persistance.Configurations
                     .HasConversion<int>()
                     .HasMaxLength(50);
 
-                SeedRolePermissionsTableWithData(pb);
+                SeedRolePermissionsTableWithData(pb, roleIds);
             });
 
             builder.Navigation(r => r.Permissions).Metadata.SetField("permissions");
             builder.Navigation(r => r.Permissions)
                 .UsePropertyAccessMode(PropertyAccessMode.Field);
         }
-        private static void SeedRoleTableWithData(EntityTypeBuilder<Role> builder)
+
+        private static void SeedRoleTableWithData(
+            EntityTypeBuilder<Role> builder,
+            IReadOnlyList<RoleId> roleIds)
         {
             builder.HasData(new[] {
                 new {
                     Id = roleIds[0],
-                    Name = Enum.GetName(typeof(RoleType), RoleType.Customer)!,
+                    Name = RoleType.Customer.ToString(),
                     Type = RoleType.Customer,
                     CreatedDate = DateTime.Now,
                     ModifiedDate = DateTime.Now
                 },
                 new {
                     Id = roleIds[1],
-                    Name = Enum.GetName(typeof(RoleType), RoleType.Manager)!,
+                    Name = RoleType.Manager.ToString(),
                     Type = RoleType.Manager,
                     CreatedDate = DateTime.Now,
                     ModifiedDate = DateTime.Now
                 },
                 new {
                     Id = roleIds[2],
-                    Name = Enum.GetName(typeof(RoleType), RoleType.Admin)!,
+                    Name = RoleType.Admin.ToString(),
                     Type = RoleType.Admin,
                     CreatedDate = DateTime.Now, 
                     ModifiedDate = DateTime.Now
@@ -101,13 +108,14 @@ namespace GarmentShop.Infrastructure.Persistance.Configurations
         }
         
         private static void SeedRolePermissionsTableWithData(
-            OwnedNavigationBuilder<Role, Permission> builder)
+            OwnedNavigationBuilder<Role, Permission> builder,
+            IReadOnlyList<RoleId> roleIds)
         {
             builder.HasData(new[] {
                 new {
                     Id = PermissionId.CreateUnique(),
                     RoleId = roleIds[0],
-                    Name = Enum.GetName(typeof(PermissionType), PermissionType.AddToCart)!,
+                    Name = PermissionType.AddToCart.ToString(),
                     Type = PermissionType.AddToCart,
                     CreatedDate = DateTime.Now,
                     ModifiedDate = DateTime.Now
@@ -115,7 +123,7 @@ namespace GarmentShop.Infrastructure.Persistance.Configurations
                 new {
                     Id = PermissionId.CreateUnique(),
                     RoleId = roleIds[0],
-                    Name = Enum.GetName(typeof(PermissionType), PermissionType.PlaceOrder)!,
+                    Name = PermissionType.PlaceOrder.ToString(),
                     Type = PermissionType.PlaceOrder,
                     CreatedDate = DateTime.Now,
                     ModifiedDate = DateTime.Now
@@ -123,7 +131,7 @@ namespace GarmentShop.Infrastructure.Persistance.Configurations
                 new {
                     Id = PermissionId.CreateUnique(),
                     RoleId = roleIds[0],
-                    Name = Enum.GetName(typeof(PermissionType), PermissionType.ViewOrderHistory)!,
+                    Name = PermissionType.ViewOrderHistory.ToString(),
                     Type = PermissionType.ViewOrderHistory,
                     CreatedDate = DateTime.Now,
                     ModifiedDate = DateTime.Now
@@ -131,7 +139,7 @@ namespace GarmentShop.Infrastructure.Persistance.Configurations
                 new {
                     Id = PermissionId.CreateUnique(),
                     RoleId = roleIds[0],
-                    Name = Enum.GetName(typeof(PermissionType), PermissionType.UpdateShippingAddress)!,
+                    Name = PermissionType.UpdateShippingAddress.ToString(),
                     Type = PermissionType.UpdateShippingAddress,
                     CreatedDate = DateTime.Now,
                     ModifiedDate = DateTime.Now
@@ -139,7 +147,7 @@ namespace GarmentShop.Infrastructure.Persistance.Configurations
                 new {
                     Id = PermissionId.CreateUnique(),
                     RoleId = roleIds[1],
-                    Name = Enum.GetName(typeof(PermissionType), PermissionType.EditItems)!,
+                    Name = PermissionType.EditItems.ToString(),
                     Type = PermissionType.EditItems,
                     CreatedDate = DateTime.Now,
                     ModifiedDate = DateTime.Now
@@ -147,7 +155,7 @@ namespace GarmentShop.Infrastructure.Persistance.Configurations
                 new {
                     Id = PermissionId.CreateUnique(),
                     RoleId = roleIds[1],
-                    Name = Enum.GetName(typeof(PermissionType), PermissionType.DeleteItems)!,
+                    Name = PermissionType.DeleteItems.ToString(),
                     Type = PermissionType.DeleteItems,
                     CreatedDate = DateTime.Now,
                     ModifiedDate = DateTime.Now
@@ -155,7 +163,7 @@ namespace GarmentShop.Infrastructure.Persistance.Configurations
                 new {
                     Id = PermissionId.CreateUnique(),
                     RoleId = roleIds[1],
-                    Name = Enum.GetName(typeof(PermissionType), PermissionType.AddItems)!,
+                    Name = PermissionType.AddItems.ToString(),
                     Type = PermissionType.AddItems,
                     CreatedDate = DateTime.Now,
                     ModifiedDate = DateTime.Now
@@ -163,7 +171,7 @@ namespace GarmentShop.Infrastructure.Persistance.Configurations
                 new {
                     Id = PermissionId.CreateUnique(),
                     RoleId = roleIds[2],
-                    Name = Enum.GetName(typeof(PermissionType), PermissionType.ManageCustomers)!,
+                    Name = PermissionType.ManageCustomers.ToString(),
                     Type = PermissionType.ManageCustomers,
                     CreatedDate = DateTime.Now,
                     ModifiedDate = DateTime.Now
@@ -171,7 +179,7 @@ namespace GarmentShop.Infrastructure.Persistance.Configurations
                 new {
                     Id = PermissionId.CreateUnique(),
                     RoleId = roleIds[2],
-                    Name = Enum.GetName(typeof(PermissionType), PermissionType.ManageUsers)!,
+                    Name = PermissionType.ManageUsers.ToString(),
                     Type = PermissionType.ManageUsers,
                     CreatedDate = DateTime.Now,
                     ModifiedDate = DateTime.Now
@@ -179,7 +187,7 @@ namespace GarmentShop.Infrastructure.Persistance.Configurations
                 new {
                     Id = PermissionId.CreateUnique(),
                     RoleId = roleIds[2],
-                    Name = Enum.GetName(typeof(PermissionType), PermissionType.ManageRoles)!,
+                    Name = PermissionType.ManageRoles.ToString(),
                     Type = PermissionType.ManageRoles,
                     CreatedDate = DateTime.Now,
                     ModifiedDate = DateTime.Now
@@ -187,7 +195,7 @@ namespace GarmentShop.Infrastructure.Persistance.Configurations
                 new {
                     Id = PermissionId.CreateUnique(),
                     RoleId = roleIds[2],
-                    Name = Enum.GetName(typeof(PermissionType), PermissionType.ManagePermissions)!,
+                    Name = PermissionType.ManagePermissions.ToString(),
                     Type = PermissionType.ManagePermissions,
                     CreatedDate = DateTime.Now,
                     ModifiedDate = DateTime.Now
@@ -195,22 +203,12 @@ namespace GarmentShop.Infrastructure.Persistance.Configurations
                 new {
                     Id = PermissionId.CreateUnique(),
                     RoleId = roleIds[2],
-                    Name = Enum.GetName(typeof(PermissionType), PermissionType.ManageOrders)!,
+                    Name = PermissionType.ManageOrders.ToString(),
                     Type = PermissionType.ManageOrders,
                     CreatedDate = DateTime.Now,
                     ModifiedDate = DateTime.Now
                 }
             });
         }
-
-        private static readonly List<RoleId> roleIds = new();
-
-        private static void SeedRoleIds()
-        {
-            for(int i = 0; i < 3; ++i)
-            {
-                roleIds.Add(RoleId.CreateUnique());
-            }
-        } 
     }
 }
