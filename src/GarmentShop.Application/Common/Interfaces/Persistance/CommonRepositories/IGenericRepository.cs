@@ -25,6 +25,8 @@ namespace GarmentShop.Application.Common.Interfaces.Persistance.CommonRepositori
         IQueryable<TEntity> GetAll();
         IQueryable<TEntity> GetAll(string include);
         IQueryable<TEntity> GetAll(string include, string include2);
+        Task<ICollection<TEntity>> GetAllAsync(
+            CancellationToken cancellationToken = default);
 
         IQueryable<TEntity> GetWhere(
             Expression<Func<TEntity, bool>> predicate);

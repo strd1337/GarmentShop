@@ -1,5 +1,6 @@
 ﻿using GarmentShop.Application.Common.Interfaces.Persistance.CommonRepositories;
 using GarmentShop.Domain.Common.Models;
+using GarmentShop.Domain.GarmentCategoryAggregate;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -60,6 +61,14 @@ namespace GarmentShop.Infrastructure.Persistance.Repositories.Common
         public IQueryable<TEntity> GetAll()
         {
             return dbContext.Set<TEntity>();
+        }
+
+        public async Task<ICollection<TEntity>> GetAllAsync(
+            CancellationToken cancellationToken = default)
+        {
+            return await dbContext
+                .Set<TEntity>()
+                .ToListAsync(cancellationToken);
         }
 
         public IQueryable<TEntity> GetAll(string include)
