@@ -22,31 +22,26 @@ a) Order entity contains information about the items a customer wants to purchas
 b) Payment entity contains information about how the customer intends to pay for the order, such as credit card details or cash.
 c) Invoice entity contains information about the total cost of the order, the tax, shipping and handling fees, and any other charges that may apply. It also has a relationship with the Payment entity to ensure that the payment is processed correctly.
 
-Aggregates look like:
-1) User:
+Use-case diagram:
 
-![image](https://user-images.githubusercontent.com/97736243/221298872-3bc92633-7493-4470-aa50-424602dea4dc.png)
+![image](https://github.com/strd1337/GarmentShop/assets/97736243/96329db3-6eae-497d-a855-9cbea7473eb6)
 
-2) Authentication:
+Activity diagram (Ordering):
 
-![image](https://user-images.githubusercontent.com/97736243/221299079-03e9809b-2ad0-4d2d-8d05-b63a23d7e76a.png)
+![image](https://github.com/strd1337/GarmentShop/assets/97736243/07177c2e-5a06-4787-b0ea-7bf296e7bcbf)
 
-3) Brand:
+State diagram (authentication):
 
-![image](https://user-images.githubusercontent.com/97736243/221299115-bf5054a8-e894-4d60-a3f1-9bf0818d1485.png)
+![image](https://github.com/strd1337/GarmentShop/assets/97736243/8f5c7b3e-d26f-436b-a8e3-f776acbe5704)
 
-4) Garment Type:
+Sequence diagram (Selecting product):
 
-![image](https://user-images.githubusercontent.com/97736243/221299146-65c7e009-ca99-4671-a595-998df361567f.png)
+![image](https://github.com/strd1337/GarmentShop/assets/97736243/f118a66e-9456-405f-8ee6-087dd2657999)
 
-5) Garment Category:
+Class diagram:
 
-![image](https://user-images.githubusercontent.com/97736243/221299232-bd7f2c75-2942-44ac-b88e-e46b28646bc7.png)
+![image](https://github.com/strd1337/GarmentShop/assets/97736243/9c94d142-a63c-4f2c-9850-ced3e5772681)
 
-6) Garment:
+Deployment diagram:
 
-![image](https://user-images.githubusercontent.com/97736243/221299272-f069f882-f0db-4a83-8a69-1fedabad3fab.png)
-
-7) Sale:
-
-![image](https://user-images.githubusercontent.com/97736243/221299311-823249d4-5268-440b-b3e0-85367df69099.png)
+![image](https://github.com/strd1337/GarmentShop/assets/97736243/c85c3c4e-cff0-406a-b1fe-6d0152bc723b)
