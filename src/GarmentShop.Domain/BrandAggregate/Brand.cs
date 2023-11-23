@@ -1,5 +1,8 @@
 ﻿using GarmentShop.Domain.BrandAggregate.ValueObjects;
 using GarmentShop.Domain.Common.Models;
+using GarmentShop.Domain.Events.Brand;
+using GarmentShop.Domain.UserAggregate.ValueObjects;
+using Microsoft.VisualBasic;
 
 namespace GarmentShop.Domain.BrandAggregate
 {
@@ -21,10 +24,27 @@ namespace GarmentShop.Domain.BrandAggregate
             string name,
             string description)
         {
-            return new(
+            var createdBrand = new Brand(
                 BrandId.CreateUnique(),
                 name,
                 description);
+
+            createdBrand.RaiseDomainEvent(
+                new BrandCreatedEvent(
+                    Guid.NewGuid(),
+                    createdBrand.Id.Value,
+                    createdBrand.Name,
+                    createdBrand.Description));
+
+            return createdBrand;
+        }
+
+        public void Update(
+            string name,
+            string description)
+        {
+            Name = name;
+            Description = description;
         }
 
 

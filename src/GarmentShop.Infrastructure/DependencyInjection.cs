@@ -25,6 +25,8 @@ using MediatR;
 using GarmentShop.Infrastructure.Idempotence;
 using GarmentShop.Application.Common.Interfaces.Persistance.AuthRepositories;
 using GarmentShop.Infrastructure.Persistance.Repositories.AuthAgg;
+using GarmentShop.Application.Common.Interfaces.Persistance.Brands;
+using GarmentShop.Infrastructure.Persistance.Repositories.BrandAgg;
 
 namespace GarmentShop.Infrastructure
 {
@@ -91,6 +93,7 @@ namespace GarmentShop.Infrastructure
             services
                 .AddScoped<IUnitOfWork, UnitOfWork>()
                 .AddScoped<IAuthRepository, AuthRepository>()
+                .AddScoped<IBrandRepository, BrandRepository>()
                 .AddCustomRepository<User, UserId, UserRepository>()
                 .AddCustomRepository<Role, RoleId, RoleRepository>();
 
