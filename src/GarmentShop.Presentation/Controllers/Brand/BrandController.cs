@@ -16,8 +16,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GarmentShop.Presentation.Controllers.Brand
 {
-    //[Authorize]
-    //[HasRole(RoleType.Admin)]
+    [Authorize]
+    [HasRole(RoleType.Admin)]
     [Route("brands")]
     public class BrandController : ApiController
     {
