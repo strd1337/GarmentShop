@@ -39,7 +39,7 @@ namespace GarmentShop.Application.Brands.Events
             {
                 logger.LogInformation(
                     "Updated brand is not found in database " +
-                    "during creating. {@DateTimeUtc}",
+                    "during updating. {@DateTimeUtc}",
                     dateTimeProvider.UtcNow);
 
                 return;

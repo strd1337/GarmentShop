@@ -17,7 +17,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace GarmentShop.Presentation.Controllers.Brand
 {
     [Authorize]
-    [HasRole(RoleType.Admin)]
     [Route("brands")]
     public class BrandController : ApiController
     {
@@ -34,7 +33,7 @@ namespace GarmentShop.Presentation.Controllers.Brand
 
         [HttpGet]
         public async Task<IActionResult> GetAll(
-           CancellationToken cancellationToken)
+            CancellationToken cancellationToken)
         {
             var request = new GetAllBrandsRequest();
 
@@ -49,10 +48,11 @@ namespace GarmentShop.Presentation.Controllers.Brand
                 errors => Problem(errors));
         }
 
+        [HasRole(RoleType.Admin)]
         [HttpPost]
         public async Task<IActionResult> Create(
-           CreateBrandRequest request,
-           CancellationToken cancellationToken)
+            CreateBrandRequest request,
+            CancellationToken cancellationToken)
         {
             var command = mapper.Map<CreateBrandCommand>(request);
 
@@ -65,6 +65,7 @@ namespace GarmentShop.Presentation.Controllers.Brand
                 errors => Problem(errors));
         }
 
+        [HasRole(RoleType.Admin)]
         [HttpPut]
         public async Task<IActionResult> Update(
             UpdateBrandRequest request,
@@ -81,6 +82,7 @@ namespace GarmentShop.Presentation.Controllers.Brand
                 errors => Problem(errors));
         }
 
+        [HasRole(RoleType.Admin)]
         [HttpDelete]
         public async Task<IActionResult> Delete(
             DeleteBrandRequest request,

@@ -1,5 +1,6 @@
 ﻿using GarmentShop.Domain.BrandAggregate.ValueObjects;
 using GarmentShop.Domain.Common.Models;
+using GarmentShop.Domain.Events.Garment;
 using GarmentShop.Domain.GarmentAggregate.Enums;
 using GarmentShop.Domain.GarmentAggregate.ValueObjects;
 using GarmentShop.Domain.GarmentTypeAggregate.ValueObjects;
@@ -52,7 +53,7 @@ namespace GarmentShop.Domain.GarmentAggregate
             BrandId brandId,
             GarmentTypeId garmentTypeId)
         {
-            return new(
+            var createdGarment = new Garment(
                 GarmentId.CreateUnique(),
                 name,
                 description,
@@ -63,6 +64,22 @@ namespace GarmentShop.Domain.GarmentAggregate
                 availableQuantity,
                 brandId,
                 garmentTypeId);
+
+            createdGarment.RaiseDomainEvent(
+                new GarmentCreatedEvent(
+                    Guid.NewGuid(),
+                    createdGarment.Id.Value,
+                    createdGarment.BrandId.Value,
+                    createdGarment.GarmentTypeId.Value,
+                    createdGarment.Name,
+                    createdGarment.Description,
+                    createdGarment.Price,
+                    createdGarment.Size.ToString(),
+                    createdGarment.Color.ToString(),
+                    createdGarment.Material.ToString(),
+                    createdGarment.AvailableQuantity));
+
+            return createdGarment;
         }
 
 #pragma warning disable CS8618

@@ -1,12 +1,11 @@
 ﻿using GarmentShop.Application.Common.Interfaces.Persistance.CommonRepositories;
 using GarmentShop.Domain.Common.Models;
-using GarmentShop.Domain.GarmentCategoryAggregate;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace GarmentShop.Infrastructure.Persistance.Repositories.Common
 {
-    public class GenericRepository<TEntity, TId> 
+    public class GenericRepository<TEntity, TId>
         : IGenericRepository<TEntity, TId>
             where TEntity : Entity<TId>
             where TId : ValueObject
@@ -19,26 +18,26 @@ namespace GarmentShop.Infrastructure.Persistance.Repositories.Common
         }
 
         public async Task<TEntity?> GetByIdAsync(
-            TId id, 
+            TId id,
             CancellationToken cancellationToken = default)
         {
             return await dbContext
                 .Set<TEntity>()
-                .FirstOrDefaultAsync(e => e.Id == id, 
+                .FirstOrDefaultAsync(e => e.Id == id,
                     cancellationToken);
         }
 
         public async Task<TEntity?> FirstOrDefaultAsync(
-            Expression<Func<TEntity, bool>> predicate, 
+            Expression<Func<TEntity, bool>> predicate,
             CancellationToken cancellationToken = default)
         {
             return await dbContext
                 .Set<TEntity>()
                 .FirstOrDefaultAsync(predicate, cancellationToken);
         }
-        
+
         public async Task AddAsync(
-            TEntity entity, 
+            TEntity entity,
             CancellationToken cancellationToken = default)
         {
             await dbContext
@@ -48,15 +47,15 @@ namespace GarmentShop.Infrastructure.Persistance.Repositories.Common
 
         public Task UpdateAsync(TEntity entity)
         {
-             dbContext.Set<TEntity>().Update(entity);
-             return Task.CompletedTask;
+            dbContext.Set<TEntity>().Update(entity);
+            return Task.CompletedTask;
         }
 
         public Task RemoveAsync(TEntity entity)
         {
             dbContext.Set<TEntity>().Remove(entity);
             return Task.CompletedTask;
-        } 
+        }
 
         public IQueryable<TEntity> GetAll()
         {
