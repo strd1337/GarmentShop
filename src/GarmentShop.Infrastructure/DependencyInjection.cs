@@ -27,6 +27,8 @@ using GarmentShop.Application.Common.Interfaces.Persistance.AuthRepositories;
 using GarmentShop.Infrastructure.Persistance.Repositories.AuthAgg;
 using GarmentShop.Application.Common.Interfaces.Persistance.Brands;
 using GarmentShop.Infrastructure.Persistance.Repositories.BrandAgg;
+using GarmentShop.Infrastructure.Persistance.Repositories.GarmentAgg;
+using GarmentShop.Application.Common.Interfaces.Persistance.Garments;
 
 namespace GarmentShop.Infrastructure
 {
@@ -94,6 +96,7 @@ namespace GarmentShop.Infrastructure
                 .AddScoped<IUnitOfWork, UnitOfWork>()
                 .AddScoped<IAuthRepository, AuthRepository>()
                 .AddScoped<IBrandRepository, BrandRepository>()
+                .AddScoped<IGarmentRepository, GarmentRepository>()
                 .AddCustomRepository<User, UserId, UserRepository>()
                 .AddCustomRepository<Role, RoleId, RoleRepository>();
 

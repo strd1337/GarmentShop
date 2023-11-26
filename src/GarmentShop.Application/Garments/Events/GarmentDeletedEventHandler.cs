@@ -1,23 +1,23 @@
 ﻿using GarmentShop.Application.Common.Interfaces.Persistance.CommonRepositories;
 using GarmentShop.Application.Common.Services;
-using GarmentShop.Domain.BrandAggregate;
-using GarmentShop.Domain.BrandAggregate.ValueObjects;
 using GarmentShop.Domain.Common.Events;
-using GarmentShop.Domain.Events.Brand;
+using GarmentShop.Domain.Events.Garment;
+using GarmentShop.Domain.GarmentAggregate;
+using GarmentShop.Domain.GarmentAggregate.ValueObjects;
 using Microsoft.Extensions.Logging;
 
-namespace GarmentShop.Application.Brands.Events
+namespace GarmentShop.Application.Garments.Events
 {
-    public sealed class BrandDeletedEventHandler
-        : IDomainEventHandler<BrandDeletedEvent>
+    public sealed class GarmentDeletedEventHandler
+        : IDomainEventHandler<GarmentDeletedEvent>
     {
         private readonly IUnitOfWork unitOfWork;
-        private readonly ILogger<BrandDeletedEventHandler> logger;
+        private readonly ILogger<GarmentDeletedEventHandler> logger;
         private readonly IDateTimeProvider dateTimeProvider;
 
-        public BrandDeletedEventHandler(
+        public GarmentDeletedEventHandler(
             IUnitOfWork unitOfWork,
-            ILogger<BrandDeletedEventHandler> logger,
+            ILogger<GarmentDeletedEventHandler> logger,
             IDateTimeProvider dateTimeProvider)
         {
             this.unitOfWork = unitOfWork;
@@ -26,19 +26,19 @@ namespace GarmentShop.Application.Brands.Events
         }
 
         public async Task Handle(
-            BrandDeletedEvent notification,
+            GarmentDeletedEvent notification,
             CancellationToken cancellationToken)
         {
-            var brandDeleted = await unitOfWork
-                .GetRepository<Brand, BrandId>()
+            var garmentDeleted = await unitOfWork
+                .GetRepository<Garment, GarmentId>()
                 .GetByIdAsync(
-                    BrandId.Create(notification.BrandId),
+                    GarmentId.Create(notification.GarmentId),
                     cancellationToken);
 
-            if (brandDeleted is null)
+            if (garmentDeleted is null)
             {
                 logger.LogInformation(
-                    "Deleted brand is not found in database " +
+                    "Deleted garment is not found in database " +
                     "during deleting. {@DateTimeUtc}",
                     dateTimeProvider.UtcNow);
 
@@ -46,8 +46,8 @@ namespace GarmentShop.Application.Brands.Events
             }
 
             logger.LogInformation(
-                "Deleted brand BrandId: {@BrandId}, Date: {@DateTimeUtc}",
-                brandDeleted.Id.Value, dateTimeProvider.UtcNow);
+                "Deleted garment GarmentId: {@GarmentId}, Date: {@DateTimeUtc}",
+                garmentDeleted.Id.Value, dateTimeProvider.UtcNow);
 
             return;
         }

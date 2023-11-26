@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GarmentShop.Infrastructure.Persistance.Repositories.BrandAgg
 {
-    internal class BrandRepository
+    public class BrandRepository
         :   GenericRepository<Brand, BrandId>,
             IBrandRepository
     {
@@ -20,7 +20,9 @@ namespace GarmentShop.Infrastructure.Persistance.Repositories.BrandAgg
             CancellationToken cancellationToken = default)
         {
             return await dbContext.Brands
-                .AnyAsync(b => b.Name.Equals(name), cancellationToken);
+                .AnyAsync(b => 
+                    b.Name.ToLower().Equals(name.ToLowerInvariant()), 
+                    cancellationToken);
         }
     }
 }

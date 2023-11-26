@@ -38,7 +38,7 @@ namespace GarmentShop.Application.Users.Events
             if (authUser is null)
             {
                 logger.LogInformation(
-                    "User is not found in database during logging in. " +
+                    "User is not found in database during viewing profile. " +
                     "{@DateTimeUtc}", dateTimeProvider.UtcNow);
 
                 return;
